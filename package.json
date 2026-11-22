@@ -1,0 +1,16 @@
+{
+  "name": "omni-mind-monorepo",
+  "version": "0.1.0",
+  "private": true,
+  "description": "OmniMind Full-Stack AI Assistant Monorepo (TypeScript BFF + React Web Console + Flutter Mobile App)",
+  "scripts": {
+    "dev:bff": "pnpm --filter @omnimind/bff-server dev",
+    "dev:web": "pnpm --filter @omnimind/web-console dev",
+    "build": "pnpm --filter @omnimind/shared-schema build && pnpm --filter @omnimind/bff-server build && pnpm --filter @omnimind/web-console build",
+    "typecheck": "pnpm -r typecheck",
+    "test:bff": "pnpm --filter @omnimind/bff-server test"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
