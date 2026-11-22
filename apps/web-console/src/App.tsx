@@ -1,4 +1,40 @@
 import React, { useEffect, useRef, useState } from 'react';
+import {
+  Alert,
+  Badge,
+  Button,
+  Card,
+  Collapse,
+  ConfigProvider,
+  Descriptions,
+  Drawer,
+  Input,
+  Layout,
+  Modal,
+  Progress,
+  Radio,
+  Space,
+  Switch,
+  Tag,
+  Typography,
+  theme,
+} from 'antd';
+import {
+  AudioOutlined,
+  CalendarOutlined,
+  CameraOutlined,
+  CheckCircleOutlined,
+  CloseCircleOutlined,
+  DatabaseOutlined,
+  ExperimentOutlined,
+  FileSearchOutlined,
+  PieChartOutlined,
+  SafetyCertificateOutlined,
+  SendOutlined,
+  SettingOutlined,
+  StopOutlined,
+  ThunderboltOutlined,
+} from '@ant-design/icons';
 import type {
   CitationItem,
   ThinkingEvent,
@@ -7,6 +43,9 @@ import type {
 } from '@omnimind/shared-schema';
 import { AppColors, AppRadius, AppSpacing, AppTypography } from './theme/tokens.js';
 import { AppStrings } from './l10n/strings.js';
+
+const { Header, Content, Footer } = Layout;
+const { Text, Title, Paragraph } = Typography;
 
 interface ChatMessageItem {
   id: string;
@@ -30,9 +69,9 @@ const INITIAL_CITATION: CitationItem = {
   createdAt: '2026-11-15 16:20',
   rrfScore: 0.92,
   snippet:
-    '...确定全程采用 TypeScript + Flutter 路线。关于云端算力开销，月度 API 与云服务预算上限严格控制在 $30.00 以内，首周必须在 Google Cloud 配置预算告警，优先使用 Gemini 2.5 Flash...',
+    '...确定全程采用 TypeScript + Flutter + React (Ant Design) 路线。关于云端算力开销，月度 API 与云服务预算上限严格控制在 $30.00 以内，首周必须在 Google Cloud 配置预算告警，优先使用 Gemini 2.5 Flash...',
   highlightedTerm: '月度 API 与云服务预算上限严格控制在 $30.00 以内',
-  tags: ['#预算告警', '#GoogleCloud', '#技术规划'],
+  tags: ['#预算告警', '#GoogleCloud', '#AntDesign'],
 };
 
 const INITIAL_MESSAGES: ChatMessageItem[] = [
@@ -103,6 +142,8 @@ export function App() {
   const [selectedModel, setSelectedModel] = useState<'gemini-2.5-flash' | 'gemini-2.5-pro' | 'deepseek-v3-fallback'>(
     'gemini-2.5-flash'
   );
+  const [enableAutoFallback, setEnableAutoFallback] = useState(true);
+  const [enableOnDeviceMasking, setEnableOnDeviceMasking] = useState(true);
   const [activeCitation, setActiveCitation] = useState<CitationItem | null>(null);
   const [showRouterModal, setShowRouterModal] = useState(false);
   const abortControllerRef = useRef<AbortController | null>(null);
@@ -167,6 +208,8 @@ export function App() {
         body: JSON.stringify({
           message: trimmed,
           modelId: selectedModel,
+          enableFallback: enableAutoFallback,
+          enableOnDeviceMasking,
           scenarioHint,
           imageAttachment:
             withPhoto || hasAttachedPhoto
@@ -292,25 +335,20 @@ export function App() {
         const citeIndex = Number(match[1]);
         const found = citations?.find((c) => c.index === citeIndex) ?? INITIAL_CITATION;
         return (
-          <button
+          <Tag
             key={idx}
+            color="cyan"
+            icon={<FileSearchOutlined />}
             onClick={() => setActiveCitation(found)}
             style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              padding: `2px ${AppSpacing.sm}px`,
-              margin: `0 ${AppSpacing.xs}px`,
-              borderRadius: AppRadius.full,
-              backgroundColor: AppColors.cyanTint,
-              color: AppColors.accentCyan,
-              border: `1px solid ${AppColors.accentCyan}`,
-              fontFamily: AppTypography.fontMono,
-              fontSize: AppTypography.captionSize,
               cursor: 'pointer',
+              marginInline: AppSpacing.xs,
+              borderRadius: AppRadius.full,
+              fontFamily: AppTypography.fontMono,
             }}
           >
             [{citeIndex} 溯源]
-          </button>
+          </Tag>
         );
       }
       return <span key={idx}>{part}</span>;
@@ -330,255 +368,179 @@ export function App() {
           : AppColors.statusWarning;
 
       return (
-        <div
+        <Card
+          size="small"
           style={{
             marginTop: AppSpacing.md,
-            padding: AppSpacing.md,
-            borderRadius: AppRadius.md,
             backgroundColor: AppColors.bgElevated,
-            border: `1.5px solid ${borderColor}`,
+            borderColor,
+            borderWidth: 1.5,
           }}
-        >
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <strong style={{ color: borderColor, fontSize: AppTypography.bodySize }}>
-              ⚠️ 端侧系统日历写入审批 (Human-in-the-Loop)
-            </strong>
-            <span
-              style={{
-                padding: `2px ${AppSpacing.sm}px`,
-                borderRadius: AppRadius.sm,
-                fontFamily: AppTypography.fontMono,
-                fontSize: AppTypography.captionSize,
-                backgroundColor:
-                  card.status === 'approved'
-                    ? AppColors.successTint
-                    : card.status === 'rejected'
-                    ? AppColors.errorTint
-                    : AppColors.warningTint,
-                color: borderColor,
-              }}
-            >
+          title={
+            <Space>
+              <SafetyCertificateOutlined style={{ color: borderColor }} />
+              <Text strong style={{ color: borderColor }}>
+                端侧系统日历写入审批 (Human-in-the-Loop)
+              </Text>
+            </Space>
+          }
+          extra={
+            <Tag color={card.status === 'pending' ? 'warning' : card.status === 'approved' ? 'success' : 'error'}>
               {card.status === 'pending' ? '挂起等待确认' : card.status === 'approved' ? '✓ 已批准' : '✕ 已拒绝'}
-            </span>
-          </div>
-
-          <div
-            style={{
-              marginTop: AppSpacing.sm,
-              padding: AppSpacing.sm,
-              borderRadius: AppRadius.sm,
-              backgroundColor: AppColors.bgPrimary,
-              fontFamily: AppTypography.fontMono,
-              fontSize: AppTypography.captionSize,
-              color: AppColors.textSecondary,
-              lineHeight: 1.6,
+            </Tag>
+          }
+        >
+          <Descriptions
+            column={1}
+            size="small"
+            bordered
+            styles={{
+              label: { width: 110, fontFamily: AppTypography.fontMono, color: AppColors.textSecondary },
+              content: { fontFamily: AppTypography.fontMono },
             }}
           >
-            <div>Tool: {card.toolName}</div>
-            <div style={{ color: AppColors.textPrimary }}>事项: {card.actionSummary}</div>
-            <div style={{ color: AppColors.accentCyan }}>时间: {card.scheduledTime}</div>
-            <div style={{ color: AppColors.statusSuccess }}>{card.conflictCheck}</div>
-          </div>
+            <Descriptions.Item label="Tool">{card.toolName}</Descriptions.Item>
+            <Descriptions.Item label="日程事项">{card.actionSummary}</Descriptions.Item>
+            <Descriptions.Item label="计划时间">
+              <Text style={{ color: AppColors.accentCyan }}>{card.scheduledTime}</Text>
+            </Descriptions.Item>
+            <Descriptions.Item label="冲突检测">
+              <Text type="success">{card.conflictCheck}</Text>
+            </Descriptions.Item>
+          </Descriptions>
 
           {card.status === 'pending' ? (
-            <div style={{ display: 'flex', gap: AppSpacing.sm, marginTop: AppSpacing.sm }}>
-              <button
+            <Space style={{ marginTop: AppSpacing.md, width: '100%', justifyContent: 'flex-end' }}>
+              <Button
+                danger
+                icon={<CloseCircleOutlined />}
                 onClick={() => handleToolApproval(msg.id, card.cardId, card.toolName, false)}
-                style={{
-                  flex: 1,
-                  padding: `${AppSpacing.sm}px`,
-                  borderRadius: AppRadius.sm,
-                  backgroundColor: AppColors.borderSubtle,
-                  color: AppColors.textPrimary,
-                  border: 'none',
-                  cursor: 'pointer',
-                }}
               >
                 {AppStrings.rejectBtn}
-              </button>
-              <button
+              </Button>
+              <Button
+                type="primary"
+                icon={<CheckCircleOutlined />}
                 onClick={() => handleToolApproval(msg.id, card.cardId, card.toolName, true)}
-                style={{
-                  flex: 1,
-                  padding: `${AppSpacing.sm}px`,
-                  borderRadius: AppRadius.sm,
-                  backgroundColor: AppColors.accentPrimary,
-                  color: AppColors.white,
-                  border: 'none',
-                  fontWeight: 600,
-                  cursor: 'pointer',
-                }}
               >
                 {AppStrings.approveBtn}
-              </button>
-            </div>
+              </Button>
+            </Space>
           ) : (
-            <div
-              style={{
-                marginTop: AppSpacing.sm,
-                padding: AppSpacing.sm,
-                borderRadius: AppRadius.sm,
-                textAlign: 'center',
-                fontFamily: AppTypography.fontMono,
-                fontSize: AppTypography.captionSize,
-                backgroundColor: card.status === 'approved' ? AppColors.successTint : AppColors.errorTint,
-                color: borderColor,
-              }}
-            >
-              {msg.approvalResultText}
-            </div>
+            <Alert
+              style={{ marginTop: AppSpacing.md }}
+              type={card.status === 'approved' ? 'success' : 'error'}
+              showIcon
+              message={msg.approvalResultText}
+            />
           )}
-        </div>
+        </Card>
       );
     }
 
     if (card.cardType === 'expense_card') {
       return (
-        <div
-          style={{
-            marginTop: AppSpacing.md,
-            padding: AppSpacing.md,
-            borderRadius: AppRadius.md,
-            backgroundColor: AppColors.bgElevated,
-            border: `1px solid ${AppColors.borderSubtle}`,
-          }}
+        <Card
+          size="small"
+          style={{ marginTop: AppSpacing.md, backgroundColor: AppColors.bgElevated }}
+          title={`🧾 智能消费记账卡 — ${card.merchant}`}
+          extra={<Tag color="cyan">{card.category}</Tag>}
         >
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <strong>🧾 智能消费记账卡 ({card.merchant})</strong>
-            <span
-              style={{
-                padding: `2px ${AppSpacing.sm}px`,
-                borderRadius: AppRadius.full,
-                backgroundColor: AppColors.cyanTint,
-                color: AppColors.accentCyan,
-                fontSize: AppTypography.captionSize,
-              }}
-            >
-              {card.category}
-            </span>
-          </div>
-          <div
-            style={{
-              marginTop: AppSpacing.sm,
-              padding: AppSpacing.sm,
-              borderRadius: AppRadius.sm,
-              backgroundColor: AppColors.bgPrimary,
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-            }}
-          >
-            <div>
-              {card.items.map((item, idx) => (
-                <div key={idx} style={{ fontSize: AppTypography.captionSize, color: AppColors.textSecondary }}>
-                  • {item.name} — {card.currency}
+          <Space direction="vertical" style={{ width: '100%' }}>
+            {card.items.map((item, idx) => (
+              <div key={idx} style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <Text type="secondary">• {item.name}</Text>
+                <Text style={{ fontFamily: AppTypography.fontMono }}>
+                  {card.currency}
                   {item.price.toFixed(2)}
-                </div>
-              ))}
-            </div>
+                </Text>
+              </div>
+            ))}
             <div
               style={{
-                fontSize: AppTypography.headlineSize,
-                fontWeight: 700,
-                color: AppColors.statusSuccess,
-                fontFamily: AppTypography.fontMono,
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                paddingTop: AppSpacing.sm,
+                borderTop: `1px solid ${AppColors.borderSubtle}`,
               }}
             >
-              {card.currency}
-              {card.totalAmount.toFixed(2)}
+              <Text type="secondary">OCR 置信度 {(card.confidence * 100).toFixed(0)}% • 占本月餐饮预算 {card.monthlyRatioPercent}%</Text>
+              <Title level={4} style={{ margin: 0, color: AppColors.statusSuccess, fontFamily: AppTypography.fontMono }}>
+                {card.currency}
+                {card.totalAmount.toFixed(2)}
+              </Title>
             </div>
-          </div>
-        </div>
+          </Space>
+        </Card>
       );
     }
 
     if (card.cardType === 'schedule_card') {
       return (
-        <div
-          style={{
-            marginTop: AppSpacing.md,
-            padding: AppSpacing.md,
-            borderRadius: AppRadius.md,
-            backgroundColor: AppColors.bgElevated,
-            border: `1px solid ${AppColors.borderSubtle}`,
-          }}
+        <Card
+          size="small"
+          style={{ marginTop: AppSpacing.md, backgroundColor: AppColors.bgElevated }}
+          title={
+            <Space>
+              <CalendarOutlined style={{ color: AppColors.accentCyan }} />
+              <span>{card.title}</span>
+            </Space>
+          }
+          extra={<Tag color="success">🟢 无日程冲突</Tag>}
         >
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <strong>📅 {card.title}</strong>
-            <span style={{ color: AppColors.statusSuccess, fontSize: AppTypography.captionSize }}>🟢 无日程冲突</span>
-          </div>
-          <div
-            style={{
-              marginTop: AppSpacing.xs,
-              fontFamily: AppTypography.fontMono,
-              fontSize: AppTypography.captionSize,
-              color: AppColors.accentCyan,
-            }}
-          >
-            🕒 {card.startTime} - {card.endTime} • 📍 {card.location}
-          </div>
-        </div>
+          <Space direction="vertical" size="small">
+            <Text style={{ fontFamily: AppTypography.fontMono, color: AppColors.accentCyan }}>
+              🕒 {card.startTime} - {card.endTime}
+            </Text>
+            <Text type="secondary">📍 {card.location}</Text>
+          </Space>
+        </Card>
       );
     }
 
     if (card.cardType === 'analytics_card') {
       return (
-        <div
-          style={{
-            marginTop: AppSpacing.md,
-            padding: AppSpacing.md,
-            borderRadius: AppRadius.md,
-            backgroundColor: AppColors.bgElevated,
-            border: `1px solid ${AppColors.borderSubtle}`,
-          }}
-        >
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: AppSpacing.sm }}>
-            <strong>📊 {card.periodTitle}</strong>
-            <span style={{ color: AppColors.statusSuccess, fontFamily: AppTypography.fontMono }}>
+        <Card
+          size="small"
+          style={{ marginTop: AppSpacing.md, backgroundColor: AppColors.bgElevated }}
+          title={
+            <Space>
+              <PieChartOutlined style={{ color: AppColors.accentPrimary }} />
+              <span>{card.periodTitle}</span>
+            </Space>
+          }
+          extra={
+            <Text strong style={{ color: AppColors.statusSuccess, fontFamily: AppTypography.fontMono }}>
               总计 ¥{card.totalAmount.toFixed(2)}
-            </span>
-          </div>
-          {card.categories.map((cat, idx) => (
-            <div key={idx} style={{ marginBottom: AppSpacing.sm }}>
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  fontSize: AppTypography.captionSize,
-                  color: AppColors.textSecondary,
-                  marginBottom: AppSpacing.xs,
-                }}
-              >
-                <span>
-                  {cat.label} ({cat.percent}%)
-                </span>
-                <span style={{ fontFamily: AppTypography.fontMono }}>¥{cat.amount}</span>
-              </div>
-              <div
-                style={{
-                  height: 8,
-                  borderRadius: AppRadius.full,
-                  backgroundColor: AppColors.bgPrimary,
-                  overflow: 'hidden',
-                }}
-              >
-                <div
-                  style={{
-                    width: `${cat.percent}%`,
-                    height: '100%',
-                    backgroundColor:
-                      cat.colorToken === 'accentPrimary'
-                        ? AppColors.accentPrimary
-                        : cat.colorToken === 'accentCyan'
-                        ? AppColors.accentCyan
-                        : AppColors.statusSuccess,
-                  }}
+            </Text>
+          }
+        >
+          <Space direction="vertical" style={{ width: '100%' }}>
+            {card.categories.map((cat, idx) => (
+              <div key={idx}>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <Text type="secondary">
+                    {cat.label} ({cat.percent}%)
+                  </Text>
+                  <Text style={{ fontFamily: AppTypography.fontMono }}>¥{cat.amount}</Text>
+                </div>
+                <Progress
+                  percent={cat.percent}
+                  showInfo={false}
+                  strokeColor={
+                    cat.colorToken === 'accentPrimary'
+                      ? AppColors.accentPrimary
+                      : cat.colorToken === 'accentCyan'
+                      ? AppColors.accentCyan
+                      : AppColors.statusSuccess
+                  }
                 />
               </div>
-            </div>
-          ))}
-          <div style={{ fontSize: AppTypography.captionSize, color: AppColors.accentCyan }}>💡 {card.aiInsight}</div>
-        </div>
+            ))}
+            <Alert type="info" showIcon message={card.aiInsight} />
+          </Space>
+        </Card>
       );
     }
 
@@ -586,380 +548,324 @@ export function App() {
   };
 
   return (
-    <div
-      style={{
-        minHeight: '100vh',
-        backgroundColor: AppColors.bgPrimary,
-        color: AppColors.textPrimary,
-        display: 'flex',
-        flexDirection: 'column',
-        maxWidth: 960,
-        margin: '0 auto',
-        borderLeft: `1px solid ${AppColors.borderSubtle}`,
-        borderRight: `1px solid ${AppColors.borderSubtle}`,
+    <ConfigProvider
+      theme={{
+        algorithm: theme.darkAlgorithm,
+        token: {
+          colorPrimary: AppColors.accentPrimary,
+          colorInfo: AppColors.accentCyan,
+          colorSuccess: AppColors.statusSuccess,
+          colorWarning: AppColors.statusWarning,
+          colorError: AppColors.statusError,
+          colorBgBase: AppColors.bgPrimary,
+          colorBgContainer: AppColors.bgSurface,
+          colorBgElevated: AppColors.bgElevated,
+          colorBorder: AppColors.borderSubtle,
+          borderRadius: AppRadius.md,
+          fontFamily: AppTypography.fontSans,
+        },
       }}
     >
-      {/* Top App Bar */}
-      <header
+      <Layout
         style={{
-          padding: `${AppSpacing.md}px ${AppSpacing.lg}px`,
-          backgroundColor: AppColors.bgSurface,
-          borderBottom: `1px solid ${AppColors.borderSubtle}`,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
+          minHeight: '100vh',
+          maxWidth: 1024,
+          margin: '0 auto',
+          backgroundColor: AppColors.bgPrimary,
+          borderLeft: `1px solid ${AppColors.borderSubtle}`,
+          borderRight: `1px solid ${AppColors.borderSubtle}`,
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: AppSpacing.sm }}>
-          <span
-            style={{
-              padding: `4px ${AppSpacing.sm}px`,
-              borderRadius: AppRadius.sm,
-              backgroundColor: AppColors.bgElevated,
-              border: `1px solid ${AppColors.borderSubtle}`,
-              fontSize: AppTypography.captionSize,
-            }}
-          >
-            {AppStrings.memoryBankBtn} ({memoryCount})
-          </span>
-          <span
-            style={{
-              fontSize: AppTypography.captionSize,
-              color: bffOnline ? AppColors.statusSuccess : AppColors.statusWarning,
-              fontFamily: AppTypography.fontMono,
-            }}
-          >
-            ● {bffOnline ? AppStrings.onlineLabel : AppStrings.offlineLabel}
-          </span>
-        </div>
-
-        <div style={{ fontWeight: 700, fontSize: AppTypography.titleSize }}>{AppStrings.appName}</div>
-
-        <button
-          onClick={() => setShowRouterModal((v) => !v)}
+        {/* Ant Design Header */}
+        <Header
           style={{
-            padding: `6px ${AppSpacing.md}px`,
-            borderRadius: AppRadius.full,
-            backgroundColor: AppColors.bgElevated,
-            border: `1px solid ${AppColors.borderSubtle}`,
-            color: AppColors.textPrimary,
-            fontFamily: AppTypography.fontMono,
-            fontSize: AppTypography.captionSize,
-            cursor: 'pointer',
-          }}
-        >
-          ⚙️ {selectedModel} ▾
-        </button>
-      </header>
-
-      {/* Model Router Settings Collapsible Panel */}
-      {showRouterModal && (
-        <div
-          style={{
-            padding: AppSpacing.md,
-            backgroundColor: AppColors.bgElevated,
+            backgroundColor: AppColors.bgSurface,
             borderBottom: `1px solid ${AppColors.borderSubtle}`,
+            paddingInline: AppSpacing.lg,
             display: 'flex',
-            flexWrap: 'wrap',
-            gap: AppSpacing.md,
             alignItems: 'center',
             justifyContent: 'space-between',
-            fontSize: AppTypography.captionSize,
           }}
         >
-          <div>
-            <strong>⚙️ 多模型路由网关 (Auto-Fallback 已开启)：</strong>
-            {(['gemini-2.5-flash', 'gemini-2.5-pro', 'deepseek-v3-fallback'] as const).map((m) => (
-              <button
-                key={m}
-                onClick={() => setSelectedModel(m)}
-                style={{
-                  marginLeft: AppSpacing.sm,
-                  padding: `4px ${AppSpacing.sm}px`,
-                  borderRadius: AppRadius.sm,
-                  border: `1px solid ${selectedModel === m ? AppColors.accentPrimary : AppColors.borderSubtle}`,
-                  backgroundColor: selectedModel === m ? AppColors.accentPrimary : AppColors.bgPrimary,
-                  color: AppColors.white,
-                  cursor: 'pointer',
-                  fontFamily: AppTypography.fontMono,
-                }}
-              >
-                {m}
-              </button>
-            ))}
-          </div>
-          <span style={{ color: AppColors.statusSuccess }}>{AppStrings.onDeviceMaskedBadge}</span>
-        </div>
-      )}
+          <Space size="middle">
+            <Button size="small" icon={<DatabaseOutlined />}>
+              记忆库 ({memoryCount})
+            </Button>
+            <Badge
+              status={bffOnline ? 'success' : 'warning'}
+              text={
+                <Text style={{ fontFamily: AppTypography.fontMono, fontSize: AppTypography.captionSize }}>
+                  {bffOnline ? AppStrings.onlineLabel : AppStrings.offlineLabel}
+                </Text>
+              }
+            />
+          </Space>
 
-      {/* Main Chat Stream */}
-      <main
-        style={{
-          flex: 1,
-          padding: AppSpacing.lg,
-          overflowY: 'auto',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: AppSpacing.lg,
-        }}
-      >
-        {messages.map((msg) => (
-          <div
-            key={msg.id}
-            style={{
-              alignSelf: msg.role === 'user' ? 'flex-end' : 'stretch',
-              maxWidth: msg.role === 'user' ? '78%' : '100%',
-              backgroundColor: msg.role === 'user' ? AppColors.accentPrimary : AppColors.bgSurface,
-              border: msg.role === 'user' ? 'none' : `1px solid ${AppColors.borderSubtle}`,
-              borderRadius: AppRadius.lg,
-              padding: AppSpacing.lg,
-            }}
+          <Title level={5} style={{ margin: 0 }}>
+            {AppStrings.appName} (Ant Design 5)
+          </Title>
+
+          <Button
+            size="small"
+            icon={<SettingOutlined />}
+            onClick={() => setShowRouterModal(true)}
+            style={{ fontFamily: AppTypography.fontMono }}
           >
-            {msg.imageName && (
-              <div
-                style={{
-                  marginBottom: AppSpacing.sm,
-                  padding: AppSpacing.sm,
-                  borderRadius: AppRadius.sm,
-                  backgroundColor: AppColors.overlayDark,
-                  fontSize: AppTypography.captionSize,
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                }}
-              >
-                <span>🖼️ {msg.imageName}</span>
-                <span style={{ color: AppColors.accentCyan }}>{AppStrings.onDeviceMaskedBadge}</span>
-              </div>
-            )}
+            {selectedModel}
+          </Button>
+        </Header>
 
-            {msg.thinking && (
-              <div
-                style={{
-                  marginBottom: AppSpacing.md,
-                  padding: AppSpacing.sm,
-                  borderRadius: AppRadius.sm,
-                  backgroundColor: AppColors.bgElevated,
-                  border: `1px solid ${AppColors.borderSubtle}`,
-                  fontFamily: AppTypography.fontMono,
-                  fontSize: AppTypography.captionSize,
-                }}
-              >
-                <div style={{ color: AppColors.accentCyan, marginBottom: AppSpacing.xs }}>
-                  {AppStrings.thinkingDonePrefix} ({msg.thinking.durationMs}ms)
-                </div>
-                {msg.thinking.steps.map((s) => (
-                  <div key={s.id} style={{ color: AppColors.textSecondary }}>
-                    ├─ {s.label}: {s.detail}
-                  </div>
-                ))}
-              </div>
-            )}
-
-            <div style={{ fontSize: AppTypography.bodySize, lineHeight: 1.6, whiteSpace: 'pre-wrap' }}>
-              {msg.role === 'assistant' ? renderTextWithCitations(msg.text, msg.citations) : msg.text}
-            </div>
-
-            {renderGenerativeCard(msg)}
-
-            {msg.usage && (
-              <div
-                style={{
-                  marginTop: AppSpacing.md,
-                  paddingTop: AppSpacing.sm,
-                  borderTop: `1px solid ${AppColors.borderSubtle}`,
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  fontFamily: AppTypography.fontMono,
-                  fontSize: AppTypography.captionSize,
-                  color: AppColors.textMuted,
-                }}
-              >
-                <span>⚡ TTFT: {msg.usage.ttftMs}ms</span>
-                <span>
-                  📊 {msg.usage.totalTokens} Tokens (${msg.usage.estimatedCostUsd.toFixed(5)})
-                </span>
-                <span style={{ color: AppColors.accentCyan }}>Model: {msg.usage.modelUsed}</span>
-              </div>
-            )}
-          </div>
-        ))}
-      </main>
-
-      {/* RAG Citation BottomSheet Drawer */}
-      {activeCitation && (
-        <div
+        {/* Ant Design Content Stream */}
+        <Content
           style={{
             padding: AppSpacing.lg,
-            backgroundColor: AppColors.bgSurface,
-            borderTop: `2px solid ${AppColors.accentCyan}`,
+            overflowY: 'auto',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: AppSpacing.md,
           }}
         >
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <strong>
-              {AppStrings.citationDrawerTitle} [#{activeCitation.index}] — {activeCitation.title}
-            </strong>
-            <span
+          {messages.map((msg) => (
+            <div
+              key={msg.id}
               style={{
-                fontFamily: AppTypography.fontMono,
-                fontSize: AppTypography.captionSize,
-                color: AppColors.statusSuccess,
+                alignSelf: msg.role === 'user' ? 'flex-end' : 'stretch',
+                maxWidth: msg.role === 'user' ? '78%' : '100%',
               }}
             >
-              Hybrid RRF Score: {activeCitation.rrfScore}
-            </span>
-          </div>
-          <p
-            style={{
-              marginTop: AppSpacing.sm,
-              padding: AppSpacing.md,
-              borderRadius: AppRadius.sm,
-              backgroundColor: AppColors.bgPrimary,
-              fontFamily: AppTypography.fontMono,
-              fontSize: AppTypography.captionSize,
-              color: AppColors.textSecondary,
-            }}
-          >
-            {activeCitation.snippet}
-          </p>
-          <button
-            onClick={() => setActiveCitation(null)}
-            style={{
-              padding: `6px ${AppSpacing.md}px`,
-              borderRadius: AppRadius.sm,
-              backgroundColor: AppColors.borderSubtle,
-              color: AppColors.textPrimary,
-              border: 'none',
-              cursor: 'pointer',
-            }}
-          >
-            {AppStrings.closeDrawerBtn}
-          </button>
-        </div>
-      )}
+              <Card
+                size="small"
+                style={{
+                  backgroundColor: msg.role === 'user' ? AppColors.accentPrimary : AppColors.bgSurface,
+                  borderColor: msg.role === 'user' ? AppColors.accentPrimary : AppColors.borderSubtle,
+                  borderRadius: AppRadius.lg,
+                }}
+              >
+                {msg.imageName && (
+                  <Alert
+                    style={{ marginBottom: AppSpacing.sm }}
+                    type="info"
+                    icon={<CameraOutlined />}
+                    showIcon
+                    message={`🖼️ ${msg.imageName}`}
+                    description={AppStrings.onDeviceMaskedBadge}
+                  />
+                )}
 
-      {/* Quick Scenario Pills */}
-      <div
-        style={{
-          padding: `${AppSpacing.sm}px ${AppSpacing.lg}px`,
-          display: 'flex',
-          flexWrap: 'wrap',
-          gap: AppSpacing.sm,
-          borderTop: `1px solid ${AppColors.borderSubtle}`,
-          backgroundColor: AppColors.bgPrimary,
-        }}
-      >
-        <button
-          onClick={() => sendPrompt('帮我把白板上的架构评审时间加到手机日历，并查上周预算上限', 'whiteboard_schedule', true)}
-          style={pillBtnStyle}
-        >
-          {AppStrings.quickWhiteboard}
-        </button>
-        <button
-          onClick={() => sendPrompt('帮我识别这张星巴克咖啡小票并归档记账', 'receipt_expense', true)}
-          style={pillBtnStyle}
-        >
-          {AppStrings.quickReceipt}
-        </button>
-        <button
-          onClick={() => sendPrompt('检索我上周拍的 Q4 AI 基建预算上限是多少？', 'rag_budget', false)}
-          style={pillBtnStyle}
-        >
-          {AppStrings.quickRag}
-        </button>
-        <button
-          onClick={() => sendPrompt('统计汇总我 11 月份的消费开销分类占比', 'monthly_analytics', false)}
-          style={pillBtnStyle}
-        >
-          {AppStrings.quickAnalytics}
-        </button>
-      </div>
+                {msg.thinking && (
+                  <Collapse
+                    size="small"
+                    defaultActiveKey={['thinking']}
+                    style={{ marginBottom: AppSpacing.md, backgroundColor: AppColors.bgElevated }}
+                    items={[
+                      {
+                        key: 'thinking',
+                        label: (
+                          <Space>
+                            <ExperimentOutlined style={{ color: AppColors.accentCyan }} />
+                            <Text style={{ fontFamily: AppTypography.fontMono, color: AppColors.accentCyan }}>
+                              {AppStrings.thinkingDonePrefix} ({msg.thinking.durationMs}ms)
+                            </Text>
+                          </Space>
+                        ),
+                        children: (
+                          <Space direction="vertical" size={4}>
+                            {msg.thinking.steps.map((s) => (
+                              <Text
+                                key={s.id}
+                                type="secondary"
+                                style={{ fontFamily: AppTypography.fontMono, fontSize: AppTypography.captionSize }}
+                              >
+                                ├─ {s.label}: {s.detail}
+                              </Text>
+                            ))}
+                          </Space>
+                        ),
+                      },
+                    ]}
+                  />
+                )}
 
-      {/* Multimodal Bottom Composer */}
-      <footer
-        style={{
-          padding: AppSpacing.md,
-          backgroundColor: AppColors.bgSurface,
-          borderTop: `1px solid ${AppColors.borderSubtle}`,
-          display: 'flex',
-          gap: AppSpacing.sm,
-          alignItems: 'center',
-        }}
-      >
-        <button
-          onClick={() => setHasAttachedPhoto((v) => !v)}
+                <Paragraph style={{ margin: 0, whiteSpace: 'pre-wrap', lineHeight: 1.65 }}>
+                  {msg.role === 'assistant' ? renderTextWithCitations(msg.text, msg.citations) : msg.text}
+                </Paragraph>
+
+                {renderGenerativeCard(msg)}
+
+                {msg.usage && (
+                  <div
+                    style={{
+                      marginTop: AppSpacing.md,
+                      paddingTop: AppSpacing.sm,
+                      borderTop: `1px solid ${AppColors.borderSubtle}`,
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      fontFamily: AppTypography.fontMono,
+                      fontSize: AppTypography.captionSize,
+                      color: AppColors.textMuted,
+                    }}
+                  >
+                    <span>
+                      <ThunderboltOutlined /> TTFT: {msg.usage.ttftMs}ms
+                    </span>
+                    <span>
+                      📊 {msg.usage.totalTokens} Tokens (${msg.usage.estimatedCostUsd.toFixed(5)})
+                    </span>
+                    <span style={{ color: AppColors.accentCyan }}>Model: {msg.usage.modelUsed}</span>
+                  </div>
+                )}
+              </Card>
+            </div>
+          ))}
+        </Content>
+
+        {/* Quick Scenario Antd Buttons Bar */}
+        <div
           style={{
-            padding: `${AppSpacing.sm}px ${AppSpacing.md}px`,
-            borderRadius: AppRadius.md,
-            backgroundColor: hasAttachedPhoto ? AppColors.accentCyan : AppColors.bgElevated,
-            color: hasAttachedPhoto ? AppColors.bgPrimary : AppColors.textPrimary,
-            border: `1px solid ${AppColors.borderSubtle}`,
-            cursor: 'pointer',
-            fontSize: AppTypography.captionSize,
-          }}
-        >
-          {AppStrings.attachPhotoBtn} {hasAttachedPhoto ? '✓' : ''}
-        </button>
-
-        <input
-          value={inputText}
-          onChange={(e) => setInputText(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') sendPrompt(inputText);
-          }}
-          placeholder={AppStrings.inputPlaceholder}
-          style={{
-            flex: 1,
-            padding: `${AppSpacing.sm}px ${AppSpacing.md}px`,
-            borderRadius: AppRadius.md,
+            padding: `${AppSpacing.sm}px ${AppSpacing.lg}px`,
+            borderTop: `1px solid ${AppColors.borderSubtle}`,
             backgroundColor: AppColors.bgPrimary,
-            border: `1px solid ${AppColors.borderSubtle}`,
-            color: AppColors.textPrimary,
-            fontSize: AppTypography.bodySize,
           }}
-        />
+        >
+          <Space wrap size="small">
+            <Button
+              size="small"
+              shape="round"
+              onClick={() => sendPrompt('帮我把白板上的架构评审时间加到手机日历，并查上周预算上限', 'whiteboard_schedule', true)}
+            >
+              {AppStrings.quickWhiteboard}
+            </Button>
+            <Button
+              size="small"
+              shape="round"
+              onClick={() => sendPrompt('帮我识别这张星巴克咖啡小票并归档记账', 'receipt_expense', true)}
+            >
+              {AppStrings.quickReceipt}
+            </Button>
+            <Button
+              size="small"
+              shape="round"
+              onClick={() => sendPrompt('检索我上周拍的 Q4 AI 基建预算上限是多少？', 'rag_budget', false)}
+            >
+              {AppStrings.quickRag}
+            </Button>
+            <Button
+              size="small"
+              shape="round"
+              onClick={() => sendPrompt('统计汇总我 11 月份的消费开销分类占比', 'monthly_analytics', false)}
+            >
+              {AppStrings.quickAnalytics}
+            </Button>
+          </Space>
+        </div>
 
-        {isStreaming ? (
-          <button
-            onClick={stopGeneration}
-            style={{
-              padding: `${AppSpacing.sm}px ${AppSpacing.lg}px`,
-              borderRadius: AppRadius.md,
-              backgroundColor: AppColors.statusError,
-              color: AppColors.white,
-              border: 'none',
-              fontWeight: 600,
-              cursor: 'pointer',
-            }}
-          >
-            {AppStrings.stopGenerating}
-          </button>
-        ) : (
-          <button
-            onClick={() => sendPrompt(inputText)}
-            style={{
-              padding: `${AppSpacing.sm}px ${AppSpacing.lg}px`,
-              borderRadius: AppRadius.md,
-              backgroundColor: AppColors.accentPrimary,
-              color: AppColors.white,
-              border: 'none',
-              fontWeight: 600,
-              cursor: 'pointer',
-            }}
-          >
-            {AppStrings.sendBtn}
-          </button>
-        )}
-      </footer>
-    </div>
+        {/* Ant Design Multimodal Footer Composer */}
+        <Footer
+          style={{
+            padding: AppSpacing.md,
+            backgroundColor: AppColors.bgSurface,
+            borderTop: `1px solid ${AppColors.borderSubtle}`,
+          }}
+        >
+          <Space.Compact style={{ width: '100%' }}>
+            <Button
+              type={hasAttachedPhoto ? 'primary' : 'default'}
+              icon={<CameraOutlined />}
+              onClick={() => setHasAttachedPhoto((v) => !v)}
+            >
+              {hasAttachedPhoto ? '已附图 ✓' : '拍照/图'}
+            </Button>
+            <Input
+              value={inputText}
+              onChange={(e) => setInputText(e.target.value)}
+              onPressEnter={() => sendPrompt(inputText)}
+              placeholder={AppStrings.inputPlaceholder}
+              suffix={<AudioOutlined style={{ color: AppColors.textSecondary }} />}
+            />
+            {isStreaming ? (
+              <Button danger type="primary" icon={<StopOutlined />} onClick={stopGeneration}>
+                {AppStrings.stopGenerating}
+              </Button>
+            ) : (
+              <Button type="primary" icon={<SendOutlined />} onClick={() => sendPrompt(inputText)}>
+                {AppStrings.sendBtn}
+              </Button>
+            )}
+          </Space.Compact>
+        </Footer>
+
+        {/* Ant Design Drawer: RAG Citation Source Details */}
+        <Drawer
+          title={
+            activeCitation
+              ? `${AppStrings.citationDrawerTitle} [#${activeCitation.index}] — ${activeCitation.title}`
+              : AppStrings.citationDrawerTitle
+          }
+          placement="bottom"
+          height={280}
+          open={Boolean(activeCitation)}
+          onClose={() => setActiveCitation(null)}
+          extra={
+            activeCitation && (
+              <Tag color="success" style={{ fontFamily: AppTypography.fontMono }}>
+                Hybrid RRF Score: {activeCitation.rrfScore}
+              </Tag>
+            )
+          }
+        >
+          {activeCitation && (
+            <Space direction="vertical" style={{ width: '100%' }}>
+              <Space>
+                <Tag color="cyan">{activeCitation.chunkId}</Tag>
+                <Text type="secondary">归档时间：{activeCitation.createdAt}</Text>
+                {activeCitation.tags.map((t) => (
+                  <Tag key={t}>{t}</Tag>
+                ))}
+              </Space>
+              <Card size="small" style={{ backgroundColor: AppColors.bgPrimary }}>
+                <Text style={{ fontFamily: AppTypography.fontMono }}>{activeCitation.snippet}</Text>
+              </Card>
+            </Space>
+          )}
+        </Drawer>
+
+        {/* Ant Design Modal: Multi-Model Router & On-Device ML Kit Settings */}
+        <Modal
+          title="⚙️ 多模型路由网关与端云协同配置 (Ant Design Config)"
+          open={showRouterModal}
+          onCancel={() => setShowRouterModal(false)}
+          onOk={() => setShowRouterModal(false)}
+          okText="保存配置"
+          cancelText="关闭"
+        >
+          <Space direction="vertical" size="middle" style={{ width: '100%' }}>
+            <Card size="small" title="1. 主推理模型 (@google/genai)">
+              <Radio.Group
+                value={selectedModel}
+                onChange={(e) => setSelectedModel(e.target.value)}
+                style={{ display: 'flex', flexDirection: 'column', gap: AppSpacing.sm }}
+              >
+                <Radio value="gemini-2.5-flash">Gemini 2.5 Flash（默认：多模态极速 / TTFT ~320ms）</Radio>
+                <Radio value="gemini-2.5-pro">Gemini 2.5 Pro（复杂 LangGraph 状态机推理）</Radio>
+                <Radio value="deepseek-v3-fallback">DeepSeek-V3（手动强制切换备用网关）</Radio>
+              </Radio.Group>
+            </Card>
+
+            <Card size="small" title="2. 自动容灾降级与端侧隐私护栏">
+              <Space direction="vertical" style={{ width: '100%' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <Text>主模型超时 (&gt;5s) 自动无缝 Fallback 至 DeepSeek-V3 / Qwen</Text>
+                  <Switch checked={enableAutoFallback} onChange={setEnableAutoFallback} />
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <Text>端侧 Google ML Kit 上传前自动脱敏手机号/身份证号</Text>
+                  <Switch checked={enableOnDeviceMasking} onChange={setEnableOnDeviceMasking} />
+                </div>
+              </Space>
+            </Card>
+          </Space>
+        </Modal>
+      </Layout>
+    </ConfigProvider>
   );
 }
-
-const pillBtnStyle: React.CSSProperties = {
-  padding: `6px ${AppSpacing.md}px`,
-  borderRadius: AppRadius.full,
-  backgroundColor: AppColors.bgSurface,
-  border: `1px solid ${AppColors.borderSubtle}`,
-  color: AppColors.textSecondary,
-  fontSize: AppTypography.captionSize,
-  cursor: 'pointer',
-};

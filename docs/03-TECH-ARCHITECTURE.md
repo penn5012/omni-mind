@@ -36,7 +36,7 @@ omni-mind/ (OmniMind Monorepo)
 │   ├── 03-TECH-ARCHITECTURE.md        # 前后端技术选型、Monorepo 规范与 SSE 协议设计
 │   ├── 04-ROADMAP-AND-SCHEDULE.md     # 4 大版本里程碑与 52 周开发排期表
 │   └── ui-prototype/
-│       └── index.html                 # 可在浏览器直接交互的高保真 HTML/Tailwind UI 原型
+│       └── index.html                 # 可在浏览器直接交互的高保真 HTML UI 原型
 ├── apps/                              # [生产应用区 - 前后端核心代码]
 │   ├── bff-server/                    # 后端：TypeScript + Hono + @google/genai + LangGraph.js
 │   ├── mobile-flutter/                # 移动端：Flutter 3.x + Riverpod + 端侧 ML Kit + 系统日历
@@ -58,7 +58,7 @@ omni-mind/ (OmniMind Monorepo)
 | 技术层级 | 选定框架 / 核心库 | 核心职责与工程选型理由 |
 | :--- | :--- | :--- |
 | **移动端客户端 (`apps/mobile-flutter`)** | **Flutter 3.x (Dart 3)** + `flutter_riverpod` + `dio` | 跨端高帧率渲染 Generative UI 原生卡片；利用 `Riverpod` 管理多通道 SSE 流式状态；通过 `image_picker`、`record`、`device_calendar`、`google_mlkit_text_recognition` 打通手机原生能力 |
-| **Web 客户端 (`apps/web-console`)** | **Next.js 15 (App Router)** + **React 19** + **Tailwind CSS** + **shadcn/ui** | 复用既有 React 优势，共用同一套 TS BFF，负责大屏流式问答、知识库文档批量管理与 Eval 评测可视化看板 |
+| **Web 客户端 (`apps/web-console`)** | **React 19** + **Ant Design 5.x (`antd` + `@ant-design/icons`)** + **Vite / Next.js** | 复用既有 React 优势，基于 Ant Design `ConfigProvider` Design Token 主题定制，共用同一套 TS BFF，负责大屏流式问答、知识库文档批量管理与 Eval 评测可视化看板 |
 | **AI 后端 BFF (`apps/bff-server`)** | **Hono (Node.js + TypeScript)** + **Zod** | 原生支持 Web Standard `streamSSE`，体积轻量、冷启动极快，完美契合 Google Cloud Run 容器化部署 |
 | **大模型与网关层** | **`@google/genai`** + **Vercel AI SDK (`ai`)** | 主力调用 `gemini-2.5-flash` / `gemini-2.5-pro` 及 `text-embedding-004`；通过 OpenAI 兼容层接入 `DeepSeek-V3` / `Qwen-Max` 实现超时自动 Fallback |
 | **Agent 与 MCP 层 (`packages/mcp-server`)** | **`@langchain/langgraph`** + **`@modelcontextprotocol/sdk`** | LangGraph.js 实现多步规划与 Human-in-the-Loop 状态挂起/恢复；官方 MCP SDK 开发标准化工具服务 |

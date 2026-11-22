@@ -1,6 +1,6 @@
 # 02. OmniMind 详细 UI / UX 设计规范与高保真原型图（零 Figma 工程版）
 
-> **设计原则**：完全不依赖 Figma，直接采用**「工程级 Design Token + 高保真 HTML/Tailwind 交互原型 + 组件树映射规格」**驱动 Flutter 与 React 双端开发。
+> **设计原则**：完全不依赖 Figma，直接采用**「工程级 Design Token + 高保真 HTML 交互原型 + Ant Design 5 / Flutter 组件树映射规格」**驱动 Flutter 与 React 双端开发。
 > **交互原型预览**：可在浏览器直接打开仓库内的 [docs/ui-prototype/index.html](./ui-prototype/index.html) 交互体验全部 5 大核心屏幕与 4 类动态卡片。
 
 ---
