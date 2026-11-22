@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OmniMind UI/UX Interactive Design Spec</title>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+</head>
+<body class="bg-[var(--background)] text-[var(--foreground)] antialiased p-4 md:p-6 m-0">
+  <div class="max-w-6xl mx-auto space-y-6">
+    <!-- Top Header & View Switcher -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-[var(--border)]">
+      <div>
+        <div class="flex items-center gap-2">
+          <span class="px-2 py-0.5 text-xs font-mono rounded bg-[var(--primary)] text-[var(--primary-foreground)]">UI SPEC v1.0</span>
+          <h1 class="text-lg font-bold">OmniMind（智脑随身助手）高保真 UI 交互设计图</h1>
+        </div>
+        <p class="text-xs text-[var(--muted-foreground)] mt-1">零 Figma 工程级原型 • 点击下方 Tab 或卡片内的按钮、角标 [1] 即可交互预览</p>
+      </div>
+      <div class="flex flex-wrap gap-1.5">
+        <button onclick="switchTab('workbench')" id="tab-workbench" class="px-3 py-1.5 text-xs font-medium rounded-lg bg-[var(--primary)] text-[var(--primary-foreground)] transition">1. 主工作台 &amp; 溯源抽屉</button>
+        <button onclick="switchTab('cards')" id="tab-cards" class="px-3 py-1.5 text-xs font-medium rounded-lg bg-[var(--card)] border border-[var(--border)] text-[var(--foreground)] transition">2. 四大 Generative UI 卡片库</button>
+        <button onclick="switchTab('router')" id="tab-router" class="px-3 py-1.5 text-xs font-medium rounded-lg bg-[var(--card)] border border-[var(--border)] text-[var(--foreground)] transition">3. 多模型路由 &amp; 端侧 AI 弹窗</button>
+        <button onclick="switchTab('tokens')" id="tab-tokens" class="px-3 py-1.5 text-xs font-medium rounded-lg bg-[var(--card)] border border-[var(--border)] text-[var(--foreground)] transition">4. Design Tokens 色板</button>
+      </div>
+    </div>
+
+    <!-- VIEW 1: Mobile Workbench + Interactive Drawer -->
+    <div id="view-workbench" class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      <!-- Phone Frame Mockup (390px standard width) -->
+      <div class="lg:col-span-6 flex justify-center">
+        <div class="w-full max-w-[395px] rounded-[28px] border-2 border-[var(--border)] overflow-hidden shadow-xl flex flex-col relative" style="background:#0B0F17; color:#F8FAFC; min-height:720px;">
+          <!-- Status Bar -->
+          <div class="px-5 pt-2.5 pb-1 flex justify-between items-center text-xs" style="color:#94A3B8;">
+            <span class="font-mono">10:42</span>
+            <div class="flex items-center gap-1.5">
+              <span>5G</span>
+              <span>100%</span>
+            </div>
+          </div>
+
+          <!-- App TopBar -->
+          <div class="px-4 py-3 flex items-center justify-between border-b" style="border-color:#2A344B; background:#0B0F17;">
+            <button onclick="toggleLeftMemory()" class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs" style="background:#161C28; border:1px solid #2A344B; color:#F8FAFC;">
+              <span>☰ 记忆库</span>
+              <span class="px-1.5 py-0.2 rounded-full text-xs font-mono" style="background:#6366F1;">42</span>
+            </button>
+            <div class="flex items-center gap-1 font-bold text-sm">
+              <span style="color:#6366F1;">✦</span>
+              <span>OmniMind</span>
+            </div>
+            <button onclick="switchTab('router')" class="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-mono" style="background:#161C28; border:1px solid #2A344B; color:#10B981;">
+              <span>●</span>
+              <span style="color:#F8FAFC;">Gemini 2.5 ▾</span>
+            </button>
+          </div>
+
+          <!-- Chat Stream Area -->
+          <div class="flex-1 p-3.5 space-y-4 overflow-y-auto text-xs">
+            <!-- User Multimodal Bubble -->
+            <div class="flex justify-end">
+              <div class="max-w-[85%] rounded-2xl rounded-tr-sm p-3 space-y-2" style="background:#6366F1; color:#FFFFFF;">
+                <div class="flex items-center gap-2 p-2 rounded-xl" style="background:rgba(0,0,0,0.22);">
+                  <div class="w-10 h-10 rounded-lg flex items-center justify-center font-mono text-xs" style="background:#1E2638; color:#06B6D4;">IMG</div>
+                  <div class="flex-1 min-w-0">
+                    <div class="font-medium truncate">会议白板照片_1122.jpg</div>
+                    <div class="text-xs opacity-80">🛡️ 端侧 ML Kit 已脱敏 1 处手机号</div>
+                  </div>
+                </div>
+                <p class="leading-relaxed">帮我把白板上的架构评审时间加到手机日历，并查一下我们上周定的云服务月度预算上限是多少？</p>
+              </div>
+            </div>
+
+            <!-- AI Stream Container -->
+            <div class="rounded-2xl p-3.5 space-y-3" style="background:#161C28; border:1px solid #2A344B;">
+              <!-- 1. Thinking Accordion -->
+              <div class="rounded-xl p-2.5 space-y-1.5" style="background:#1E2638; border:1px solid #2A344B;">
+                <div onclick="toggleThinking()" class="flex items-center justify-between cursor-pointer">
+                  <div class="flex items-center gap-1.5 font-mono text-xs" style="color:#06B6D4;">
+                    <span>💭 思考与工具规划完成 (1.1s)</span>
+                  </div>
+                  <span id="thinking-arrow" class="text-xs" style="color:#94A3B8;">收起 ▴</span>
+                </div>
+                <div id="thinking-detail" class="space-y-1 pt-1 border-t font-mono text-xs" style="border-color:#2A344B; color:#94A3B8;">
+                  <div>├─ 1. 视觉提取：事项「AI 网关评审」，周三 15:00-16:30</div>
+                  <div>├─ 2. Hybrid RAG：召回《Q4基建预算纪要》(RRF: 0.92)</div>
+                  <div>└─ 3. 端侧工具：调用 calendar.create_event (触发审批拦截)</div>
+                </div>
+              </div>
+
+              <!-- 2. Cited Markdown Stream -->
+              <div class="leading-relaxed space-y-1.5" style="color:#F8FAFC;">
+                <p>
+                  根据你上周归档的《Q4 AI 基建预算纪要》
+                  <button onclick="openCitationDrawer()" class="inline-flex items-center px-1.5 py-0.5 mx-0.5 rounded-full font-mono text-xs cursor-pointer transition hover:opacity-80" style="background:rgba(6,182,212,0.18); color:#06B6D4; border:1px solid #06B6D4;">[1 溯源]</button>
+                  ，你的 Google Cloud 与大模型月度预算上限严格设定为 <strong style="color:#10B981;">$30.00</strong>（本月当前累计消耗 $4.20）。
+                </p>
+                <p>同时，已从白板照片中提取出架构评审日程，写入系统日历前请确认：</p>
+              </div>
+
+              <!-- 3. Generative UI Card: Human-in-the-loop Approval -->
+              <div id="approval-card" class="rounded-xl p-3 space-y-2.5 transition" style="background:#1E2638; border:1.5px solid #F59E0B;">
+                <div class="flex items-center justify-between">
+                  <span class="font-semibold flex items-center gap-1.5" style="color:#F59E0B;">
+                    <span>⚠️ 端侧系统日历写入审批</span>
+                  </span>
+                  <span id="approval-badge" class="px-2 py-0.5 rounded text-xs font-mono" style="background:rgba(245,158,11,0.18); color:#F59E0B;">挂起等待确认</span>
+                </div>
+                <div class="space-y-1 text-xs p-2 rounded-lg font-mono" style="background:#0B0F17; color:#94A3B8;">
+                  <div><span style="color:#64748B;">Tool:</span> device_calendar.create_event</div>
+                  <div><span style="color:#64748B;">事项:</span> <span style="color:#F8FAFC;">AI 网关架构评审与压测复盘</span></div>
+                  <div><span style="color:#64748B;">时间:</span> <span style="color:#F8FAFC;">2026-11-25 (周三) 15:00 - 16:30</span></div>
+                  <div><span style="color:#64748B;">冲突:</span> <span style="color:#10B981;">🟢 该时段无日历冲突</span></div>
+                </div>
+                <div id="approval-actions" class="flex gap-2 pt-1">
+                  <button onclick="handleApproval(false)" class="flex-1 py-1.5 rounded-lg font-medium text-xs" style="background:#2A344B; color:#F8FAFC;">✕ 拒绝执行</button>
+                  <button onclick="handleApproval(true)" class="flex-1 py-1.5 rounded-lg font-medium text-xs" style="background:#6366F1; color:#FFFFFF;">✓ 批准写入日历</button>
+                </div>
+              </div>
+
+              <!-- 4. LLMOps Observability Micro-bar -->
+              <div class="pt-1 flex items-center justify-between font-mono text-xs" style="color:#64748B;">
+                <span>⚡ TTFT: 340ms</span>
+                <span>📊 486 Tokens ($0.00018)</span>
+                <span style="color:#06B6D4;">Langfuse Trace ↗</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Prompt Pills -->
+          <div class="px-3 py-2 flex gap-1.5 overflow-x-auto border-t" style="border-color:#2A344B; background:#0B0F17;">
+            <span onclick=" openCitationDrawer()" class="px-2.5 py-1 rounded-full text-xs whitespace-nowrap cursor-pointer" style="background:#161C28; border:1px solid #2A344B; color:#06B6D4;">🔍 点我预览 [1] 记忆溯源抽屉</span>
+            <span onclick="switchTab('cards')" class="px-2.5 py-1 rounded-full text-xs whitespace-nowrap cursor-pointer" style="background:#161C28; border:1px solid #2A344B; color:#94A3B8;">🧾 查看记账卡</span>
+            <span class="px-2.5 py-1 rounded-full text-xs whitespace-nowrap" style="background:#161C28; border:1px solid #2A344B; color:#94A3B8;">📅 提取待办</span>
+          </div>
+
+          <!-- Multimodal Composer Bar -->
+          <div class="p-3 flex items-center gap-2 border-t" style="border-color:#2A344B; background:#161C28;">
+            <button class="w-9 h-9 rounded-xl flex items-center justify-center text-sm" style="background:#1E2638; border:1px solid #2A344B;" title="拍照/上传图片">📷</button>
+            <div class="flex-1 px-3 py-2 rounded-xl text-xs" style="background:#0B0F17; border:1px solid #2A344B; color:#64748B;">
+              输入指令，或按住说话...
+            </div>
+            <button class="w-9 h-9 rounded-xl flex items-center justify-center text-sm" style="background:#1E2638; border:1px solid #2A344B;" title="语音输入">🎙️</button>
+            <button class="w-9 h-9 rounded-xl flex items-center justify-center text-xs font-bold" style="background:#6366F1; color:#FFFFFF;">⬆️</button>
+          </div>
+
+          <!-- BottomSheet Overlay: RAG Citation Drawer (Toggled by clicking [1]) -->
+          <div id="citation-drawer" class="hidden absolute inset-x-0 bottom-0 rounded-t-3xl p-4 space-y-3 shadow-2xl transition-all" style="background:#161C28; border-top:2px solid #06B6D4; min-height:360px; z-index:20;">
+            <div class="w-10 h-1 rounded-full mx-auto" style="background:#2A344B;"></div>
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="px-2 py-0.5 rounded-full font-mono text-xs" style="background:rgba(6,182,212,0.2); color:#06B6D4;">引用 #1</span>
+                <span class="font-bold text-sm">RAG 记忆溯源详情</span>
+              </div>
+              <span class="font-mono text-xs px-2 py-0.5 rounded" style="background:#1E2638; color:#10B981;">RRF Score: 0.92</span>
+            </div>
+            <div class="flex gap-3 p-2.5 rounded-xl" style="background:#0B0F17; border:1px solid #2A344B;">
+              <div class="w-16 h-16 rounded-lg flex flex-col items-center justify-center font-mono text-xs shrink-0" style="background:#1E2638; color:#06B6D4; border:1px dashed #06B6D4;">
+                <span>原图</span>
+                <span>缩略图</span>
+              </div>
+              <div class="text-xs space-y-1">
+                <div class="font-semibold" style="color:#F8FAFC;">📄《Q4 AI 基建预算纪要 (白板拍立存)》</div>
+                <div style="color:#94A3B8;">归档时间：2026-11-15 16:20 • Chunk #8f92a</div>
+                <div class="flex gap-1 pt-0.5">
+                  <span class="px-1.5 py-0.2 rounded text-xs" style="background:#1E2638; color:#94A3B8;">#预算告警</span>
+                  <span class="px-1.5 py-0.2 rounded text-xs" style="background:#1E2638; color:#94A3B8;">#GoogleCloud</span>
+                </div>
+              </div>
+            </div>
+            <div class="space-y-1 text-xs">
+              <div style="color:#94A3B8;">📝 向量+全文混合检索命中原文段落：</div>
+              <div class="p-3 rounded-xl leading-relaxed font-mono text-xs" style="background:#0B0F17; border:1px solid #2A344B; color:#94A3B8;">
+                "...确定全程采用 TypeScript + Flutter 路线。关于云端算力开销，<span style="background:rgba(6,182,212,0.25); color:#F8FAFC; padding:1px 4px; border-radius:4px;">月度 API 与云服务预算上限严格控制在 $30.00 以内</span>，首周必须在 Google Cloud 配置预算告警..."
+              </div>
+            </div>
+            <button onclick="closeCitationDrawer()" class="w-full py-2 rounded-xl font-medium text-xs" style="background:#2A344B; color:#F8FAFC;">关闭溯源抽屉</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Architectural Callouts & Interactive Guide -->
+      <div class="lg:col-span-6 space-y-4">
+        <div class="p-4 rounded-xl bg-[var(--card)] border border-[var(--border)] space-y-3">
+          <h2 class="text-sm font-bold flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-[var(--primary)]"></span>
+            单工作台 UI 架构的 4 大核心设计巧思
+          </h2>
+          <div class="space-y-2.5 text-xs text-[var(--muted-foreground)] leading-relaxed">
+            <div class="p-2.5 rounded-lg border border-[var(--border)]">
+              <strong class="text-[var(--foreground)]">① 思考链透明化 (Thinking Accordion)：</strong>
+              通过 Hono <code class="font-mono text-[var(--code-foreground)]">event: thinking</code> 实时推送视觉解析、RAG 召回分数与 Tool 规划步骤，点击左侧手机中的「收起/展开」可预览交互。
+            </div>
+            <div class="p-2.5 rounded-lg border border-[var(--border)]">
+              <strong class="text-[var(--foreground)]">② 防幻觉角标溯源 (Citation BottomSheet)：</strong>
+              点击左侧回复中的青色 <button onclick="openCitationDrawer()" class="px-1.5 py-0.2 rounded font-mono text-xs underline text-[var(--link)]">[1 溯源]</button> 按钮，手机底部会滑出半屏溯源抽屉，展示原始拍摄图片与高亮切片。
+            </div>
+            <div class="p-2.5 rounded-lg border border-[var(--border)]">
+              <strong class="text-[var(--foreground)]">③ 人在回路安全拦截 (Human-in-the-Loop Card)：</strong>
+              点击左侧手机黄色审批卡片中的 <strong>「✓ 批准写入日历」</strong> 或 <strong>「✕ 拒绝执行」</strong>，可体验流式挂起恢复后的卡片状态流转。
+            </div>
+            <div class="p-2.5 rounded-lg border border-[var(--border)]">
+              <strong class="text-[var(--foreground)]">④ 底部 LLMOps 开发者微标：</strong>
+              每条 AI 消息底部直接展示 <code class="font-mono">TTFT: 340ms</code> 与 <code class="font-mono">Tokens / Cost</code>，面试演示时直观证明你的性能优化与可观测性功底。
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VIEW 2: 4 Generative UI Cards Gallery -->
+    <div id="view-cards" class="hidden grid grid-cols-1 md:grid-cols-2 gap-4">
+      <!-- Card 1: Expense Card -->
+      <div class="p-4 rounded-2xl space-y-3" style="background:#161C28; border:1px solid #2A344B; color:#F8FAFC;">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold flex items-center gap-1.5">🧾 1. 消费记账识别卡 (<code class="font-mono" style="color:#06B6D4;">expense_card</code>)</span>
+          <span class="px-2 py-0.5 rounded-full text-xs" style="background:#1E2638; color:#06B6D4;">餐饮美食</span>
+        </div>
+        <div class="p-3 rounded-xl flex items-center justify-between" style="background:#0B0F17; border:1px solid #2A344B;">
+          <div>
+            <div class="text-xs" style="color:#94A3B8;">Starbucks Reserve 星巴克臻选</div>
+            <div class="text-xl font-bold font-mono mt-0.5" style="color:#10B981;">¥ 68.00</div>
+          </div>
+          <div class="text-right text-xs font-mono" style="color:#94A3B8;">
+            <div>2026-11-22</div>
+            <div>OCR 置信度 99%</div>
+          </div>
+        </div>
+        <div class="text-xs space-y-1" style="color:#94A3B8;">
+          <div>• 冰美式咖啡 (大杯) — ¥32.00</div>
+          <div>• 法式牛肉可颂 — ¥36.00</div>
+        </div>
+        <div class="flex gap-2 pt-1 text-xs">
+          <button class="flex-1 py-1.5 rounded-lg" style="background:#1E2638; border:1px solid #2A344B;">✏️ 编辑明细</button>
+          <button class="flex-1 py-1.5 rounded-lg font-medium" style="background:#6366F1; color:#FFFFFF;">✓ 确认归档入库</button>
+        </div>
+      </div>
+
+      <!-- Card 2: Schedule Card -->
+      <div class="p-4 rounded-2xl space-y-3" style="background:#161C28; border:1px solid #2A344B; color:#F8FAFC;">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold flex items-center gap-1.5">📅 2. 日程待办提取卡 (<code class="font-mono" style="color:#06B6D4;">schedule_card</code>)</span>
+          <span class="px-2 py-0.5 rounded-full text-xs" style="background:rgba(16,185,129,0.15); color:#10B981;">🟢 无日程冲突</span>
+        </div>
+        <div class="p-3 rounded-xl space-y-1.5 text-xs" style="background:#0B0F17; border:1px solid #2A344B;">
+          <div class="font-bold text-sm">Flutter × AI 流式架构技术分享</div>
+          <div class="font-mono" style="color:#06B6D4;">🕒 2026-11-26 (周四) 14:00 - 15:30</div>
+          <div style="color:#94A3B8;">📍 飞书线上会议室 / 提前 15 分钟系统提醒</div>
+        </div>
+        <button class="w-full py-2 rounded-lg font-medium text-xs" style="background:#6366F1; color:#FFFFFF;">📅 一键写入手机系统日历</button>
+      </div>
+
+      <!-- Card 3: Tool Approval Card -->
+      <div class="p-4 rounded-2xl space-y-3" style="background:#161C28; border:1.5px solid #F59E0B; color:#F8FAFC;">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold" style="color:#F59E0B;">⚠️ 3. 敏感操作审批拦截卡 (<code class="font-mono">tool_approval_card</code>)</span>
+          <span class="px-2 py-0.5 rounded text-xs font-mono" style="background:rgba(245,158,11,0.18); color:#F59E0B;">HITL 挂起态</span>
+        </div>
+        <div class="p-2.5 rounded-xl font-mono text-xs space-y-1" style="background:#0B0F17; color:#94A3B8;">
+          <div>MCP Server: <span style="color:#F8FAFC;">omnimind-workspace-mcp</span></div>
+          <div>Action: <span style="color:#F59E0B;">delete_memory_record(id: "mem_204")</span></div>
+          <div>Reason: 用户请求清理过期的临时测试账单</div>
+        </div>
+        <div class="flex gap-2 text-xs">
+          <button class="flex-1 py-1.5 rounded-lg" style="background:#2A344B;">✕ 拒绝并回滚</button>
+          <button class="flex-1 py-1.5 rounded-lg font-medium" style="background:#F59E0B; color:#0B0F17;">✓ 授权执行</button>
+        </div>
+      </div>
+
+      <!-- Card 4: Analytics Card -->
+      <div class="p-4 rounded-2xl space-y-3" style="background:#161C28; border:1px solid #2A344B; color:#F8FAFC;">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold">📊 4. 动态统计分析图表卡 (<code class="font-mono" style="color:#06B6D4;">analytics_card</code>)</span>
+          <span class="font-mono text-xs" style="color:#10B981;">总计 ¥3,420.00</span>
+        </div>
+        <div class="space-y-2 text-xs">
+          <div>
+            <div class="flex justify-between mb-1"><span>餐饮美食 (44%)</span><span class="font-mono">¥1,520</span></div>
+            <div class="w-full h-2 rounded-full overflow-hidden" style="background:#0B0F17;"><div class="h-full rounded-full" style="width:44%; background:#6366F1;"></div></div>
+          </div>
+          <div>
+            <div class="flex justify-between mb-1"><span>云服务与数码订阅 (29%)</span><span class="font-mono">¥980</span></div>
+            <div class="w-full h-2 rounded-full overflow-hidden" style="background:#0B0F17;"><div class="h-full rounded-full" style="width:29%; background:#06B6D4;"></div></div>
+          </div>
+          <div>
+            <div class="flex justify-between mb-1"><span>交通出行 (27%)</span><span class="font-mono">¥920</span></div>
+            <div class="w-full h-2 rounded-full overflow-hidden" style="background:#0B0F17;"><div class="h-full rounded-full" style="width:27%; background:#10B981;"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VIEW 3: Multi-Model Router & On-Device ML Kit Settings Modal -->
+    <div id="view-router" class="hidden max-w-xl mx-auto p-5 rounded-2xl space-y-4" style="background:#161C28; border:1px solid #2A344B; color:#F8FAFC;">
+      <div class="flex items-center justify-between pb-3 border-b" style="border-color:#2A344B;">
+        <h2 class="text-sm font-bold">⚙️ 多模型路由网关与端云协同配置 (Model Router Modal)</h2>
+        <span class="text-xs font-mono px-2 py-0.5 rounded" style="background:#1E2638; color:#10B981;">Gateway Active</span>
+      </div>
+      <div class="space-y-3 text-xs">
+        <div class="p-3 rounded-xl space-y-2" style="background:#0B0F17; border:1px solid #2A344B;">
+          <div class="font-semibold" style="color:#06B6D4;">1. 主推理模型 (Primary Model - @google/genai)</div>
+          <label class="flex items-center justify-between p-2 rounded-lg cursor-pointer" style="background:#1E2638;">
+            <span>● <strong>Gemini 2.5 Flash</strong>（默认：多模态极速响应 / 极低成本）</span>
+            <span class="font-mono text-xs" style="color:#10B981;">TTFT ~320ms</span>
+          </label>
+          <label class="flex items-center justify-between p-2 rounded-lg cursor-pointer" style="color:#94A3B8;">
+            <span>○ <strong>Gemini 2.5 Pro</strong>（复杂多步 LangGraph 规划）</span>
+            <span class="font-mono text-xs">TTFT ~850ms</span>
+          </label>
+        </div>
+
+        <div class="p-3 rounded-xl space-y-2" style="background:#0B0F17; border:1px solid #2A344B;">
+          <div class="flex items-center justify-between">
+            <span class="font-semibold" style="color:#F59E0B;">2. 自动容灾降级路由 (Auto Fallback - OpenAI 兼容网关)</span>
+            <span class="px-2 py-0.5 rounded font-mono" style="background:rgba(16,185,129,0.18); color:#10B981;">已开启 ✓</span>
+          </div>
+          <p style="color:#94A3B8;">当主模型请求超时 (&gt;5000ms) 或返回 503/429 时，BFF 自动无缝切换至备用模型：</p>
+          <div class="font-mono p-2 rounded" style="background:#1E2638; color:#F8FAFC;">Fallback Chain: Gemini 2.5 Flash ➔ DeepSeek-V3 ➔ Qwen-Max</div>
+        </div>
+
+        <div class="p-3 rounded-xl space-y-2" style="background:#0B0F17; border:1px solid #2A344B;">
+          <div class="flex items-center justify-between">
+            <span class="font-semibold" style="color:#10B981;">3. 端侧 AI 隐私脱敏护栏 (On-Device Google ML Kit)</span>
+            <span class="px-2 py-0.5 rounded font-mono" style="background:rgba(16,185,129,0.18); color:#10B981;">已开启 ✓</span>
+          </div>
+          <p style="color:#94A3B8;">图片上传云端前，先在手机本地运行端侧文字检测，自动对 11 位手机号、18 位身份证号与银行卡进行本地掩码替换。</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- VIEW 4: Design Tokens Swatches -->
+    <div id="view-tokens" class="hidden grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 text-xs">
+      <div class="p-3 rounded-xl border border-[var(--border)] space-y-2" style="background:#0B0F17; color:#F8FAFC;">
+        <div class="font-mono font-bold">bgPrimary</div>
+        <div class="font-mono text-xs opacity-75">#0B0F17</div>
+        <div class="text-xs opacity-70">全局主工作台深空底色</div>
+      </div>
+      <div class="p-3 rounded-xl border border-[var(--border)] space-y-2" style="background:#161C28; color:#F8FAFC;">
+        <div class="font-mono font-bold">bgSurface</div>
+        <div class="font-mono text-xs opacity-75">#161C28</div>
+        <div class="text-xs opacity-70">消息流容器与抽屉底色</div>
+      </div>
+      <div class="p-3 rounded-xl border border-[var(--border)] space-y-2" style="background:#6366F1; color:#FFFFFF;">
+        <div class="font-mono font-bold">accentPrimary</div>
+        <div class="font-mono text-xs opacity-90">#6366F1</div>
+        <div class="text-xs opacity-90">品牌主色 / 用户气泡 / 主按钮</div>
+      </div>
+      <div class="p-3 rounded-xl border border-[var(--border)] space-y-2" style="background:#06B6D4; color:#0B0F17;">
+        <div class="font-mono font-bold">accentCyan</div>
+        <div class="font-mono text-xs">#06B6D4</div>
+        <div class="text-xs">RAG 角标 [1] / 思考链高亮</div>
+      </div>
+      <div class="p-3 rounded-xl border border-[var(--border)] space-y-2" style="background:#F59E0B; color:#0B0F17;">
+        <div class="font-mono font-bold">statusWarning</div>
+        <div class="font-mono text-xs">#F59E0B</div>
+        <div class="text-xs">人在回路审批拦截提示</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function switchTab(tab) {
+      const views = ['workbench', 'cards', 'router', 'tokens'];
+      views.forEach(v => {
+        document.getElementById('view-' + v).classList.toggle('hidden', v !== tab);
+        const btn = document.getElementById('tab-' + v);
+        if (v === tab) {
+          btn.className = 'px-3 py-1.5 text-xs font-medium rounded-lg bg-[var(--primary)] text-[var(--primary-foreground)] transition';
+        } else {
+          btn.className = 'px-3 py-1.5 text-xs font-medium rounded-lg bg-[var(--card)] border border-[var(--border)] text-[var(--foreground)] transition';
+        }
+      });
+    }
+
+    function toggleThinking() {
+      const detail = document.getElementById('thinking-detail');
+      const arrow = document.getElementById('thinking-arrow');
+      const isHidden = detail.classList.toggle('hidden');
+      arrow.textContent = isHidden ? '展开 ▾' : '收起 ▴';
+    }
+
+    function openCitationDrawer() {
+      document.getElementById('citation-drawer').classList.remove('hidden');
+    }
+
+    function closeCitationDrawer() {
+      document.getElementById('citation-drawer').classList.add('hidden');
+    }
+
+    function handleApproval(approved) {
+      const card = document.getElementById('approval-card');
+      const badge = document.getElementById('approval-badge');
+      const actions = document.getElementById('approval-actions');
+      if (approved) {
+        card.style.borderColor = '#10B981';
+        badge.style.background = 'rgba(16,185,129,0.2)';
+        badge.style.color = '#10B981';
+        badge.textContent = '✓ 已批准并写入系统日历';
+        actions.innerHTML = '<div class="w-full py-1.5 text-center rounded-lg font-mono text-xs" style="background:rgba(16,185,129,0.15); color:#10B981;">✓ 系统日历写入成功 (event_id: cal_9821)</div>';
+      } else {
+        card.style.borderColor = '#EF4444';
+        badge.style.background = 'rgba(239,68,68,0.2)';
+        badge.style.color = '#EF4444';
+        badge.textContent = '✕ 用户已拒绝执行';
+        actions.innerHTML = '<div class="w-full py-1.5 text-center rounded-lg font-mono text-xs" style="background:rgba(239,68,68,0.15); color:#EF4444;">✕ 已取消日历写入并通知云端 Agent</div>';
+      }
+    }
+  </script>
+</body>
+</html>
