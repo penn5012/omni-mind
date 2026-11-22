@@ -27,7 +27,7 @@
 为了保证代码库与日常学习笔记互不污染，仓库严格划分为 **4 大物理隔离区**：
 
 ```text
-ai-xue-xi-ji-hua/ (OmniMind Monorepo)
+omni-mind/ (OmniMind Monorepo)
 ├── README.md                          # 仓库总览、架构图与快速导航
 ├── LEARNING_PLAN.md                   # [学习区] 52 周转型总计划与打卡表
 ├── docs/                              # [文档区 - 按职责严格拆分]
