@@ -23,11 +23,3 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 *.log
-
-# Mobile / Flutter / Android
-.dart_tool/
-.flutter-plugins
-.flutter-plugins-dependencies
-.packages
-*.apk
-*.aab

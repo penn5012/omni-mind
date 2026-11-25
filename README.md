@@ -1,7 +1,7 @@
 # ✦ OmniMind & 52 周 AI 应用开发工程师转型主仓库
 
 > **定位**：融合「52 周系统化 AI 工程学习路线」与「旗舰级全模态端云协同 AI 助手 **OmniMind**」的全栈 Monorepo。
-> **核心技术栈**：**TypeScript (Hono / Node.js) + Flutter 3.x + React 19 / Next.js 15 + `@google/genai` + LangGraph.js + MCP + Supabase `pgvector` + Langfuse**（全程零 Python 主栈）。
+> **核心技术栈**：**TypeScript (Hono / Node.js) + React 19 + Ant Design 5（PC 控制台 & 移动 H5）+ `@google/genai` + LangGraph.js + MCP + Supabase `pgvector` + Langfuse**（全程纯 TypeScript / React，零 Python 主栈、免原生 App 环境）。
 
 ---
 
@@ -31,8 +31,8 @@
 │   └── ui-prototype/index.html        # 零 Figma 交互式高保真 UI 设计原型
 ├── apps/                              # [前后端应用区 - Monorepo 核心工程]
 │   ├── bff-server/                    # 后端：TypeScript + Hono + @google/genai + 多模型网关 + LangGraph
-│   ├── mobile-flutter/                # 移动端：Flutter 3.x + Riverpod + 动态卡片 + 系统日历 + 端侧 ML Kit
-│   └── web-console/                   # Web 端：Next.js 15 + React 19 + Generative UI + RAG 评测看板
+│   ├── mobile-h5/                     # 移动 H5 端：React 19 + Ant Design 5 + Vite + 移动多模态采集 + .ics 日历导出
+│   └── web-console/                   # Web 端：React 19 + Ant Design 5 + Generative UI + RAG 评测看板
 ├── packages/                          # [共享协议、MCP 服务与自动化评测套件]
 │   ├── shared-schema/                 # 前后端共享的 SSE 多通道事件协议与动态卡片 Zod Schema
 │   ├── mcp-server/                    # 基于 @modelcontextprotocol/sdk 的自定义 MCP 工具服务
@@ -47,7 +47,25 @@
 
 ## 🎯 四大版本里程碑（同步 GitHub Milestones & Issues）
 
-1. **Milestone 1 (`v0.1`) — 多模态流式基座与动态卡片（第 1~6 周）**：跑通 TS Hono 多通道 SSE、多模型容灾网关与 Flutter/Web 日程/记账动态卡片渲染。
+1. **Milestone 1 (`v0.1`) — 多模态流式基座与动态卡片（第 1~6 周）**：跑通 TS Hono 多通道 SSE、多模型容灾网关与 React + Ant Design（H5 移动端 / PC 控制台）日程/记账动态卡片渲染。
 2. **Milestone 2 (`v0.2`) — 个人记忆库 RAG 与量化 Eval（第 7~22 周）**：考取 Google Agent Skill Badge，实现多模态切片、`pgvector` + 全文混合检索 (RRF)、Rerank、`[1]` 角标溯源抽屉、Langfuse 监控与 40 题量化 Eval 报告。
-3. **Milestone 3 (`v0.3`) — 跨端 Agent、MCP 与端云系统联动（第 23~38 周）**：集成 LangGraph.js 状态机、自定义 MCP Server、Human-in-the-Loop 审批拦截、Flutter 写入手机系统真实日历、端侧 ML Kit 隐私脱敏，并容器化部署至 Google Cloud Run。
-4. **Milestone 4 (`v1.0`) — 终极性能打磨与求职冲刺（第 39~52 周）**：TTFT 首字延迟与语义缓存优化、1 分钟真机高清演示视频、双版本 STAR 简历定稿与全量求职冲刺。
+3. **Milestone 3 (`v0.3`) — 跨端 Agent、MCP 与移动 H5 协同（第 23~38 周）**：集成 LangGraph.js 状态机、自定义 MCP Server、Human-in-the-Loop 审批拦截、H5 相机/语音采集、`.ics` 日历导出与本地隐私脱敏，并容器化部署至 Google Cloud Run。
+4. **Milestone 4 (`v1.0`) — 终极性能打磨与求职冲刺（第 39~52 周）**：TTFT 首字延迟与语义缓存优化、1 分钟手机浏览器/桌面高清演示视频、双版本 STAR 简历定稿与全量求职冲刺。
+
+---
+
+## 🚀 本地快速启动
+
+```bash
+# 1. 安装依赖
+pnpm install
+
+# 2. 启动后端 AI BFF (http://localhost:3001)
+pnpm dev:bff
+
+# 3. 启动移动端 H5 工作台 (http://localhost:3002，支持同局域网手机浏览器直接打开)
+pnpm dev:h5
+
+# 4. 启动 PC Web 控制台 (http://localhost:3000)
+pnpm dev:web
+```

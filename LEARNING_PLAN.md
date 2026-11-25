@@ -1,9 +1,9 @@
 # AI 应用开发工程师转型学习计划（v3 52 周全细化版 · 1 年期）
 
-> **目标岗位**：AI 应用开发工程师（主攻 **AI 全栈 / AI 前端** 与 **AI 移动端应用开发**）
-> **学员背景**：具备 **Android / Flutter / React** 开发经验，**不学 Python 作为开发主栈**（全程采用 **TypeScript + React + Flutter / Android**，仅保留看懂 Python 示例逻辑的基础阅读能力）
+> **目标岗位**：AI 应用开发工程师（主攻 **AI 全栈 / AI 前端** 与 **AI 移动 H5 应用开发**）
+> **学员背景**：具备 **Android / Flutter / React** 开发经验，**不学 Python 作为开发主栈、不折腾原生 App 编译环境**（全程统一采用 **TypeScript + React + Ant Design（Web & 移动 H5）**，仅保留看懂 Python 示例逻辑的基础阅读能力）
 > **转型周期**：**52 周 / 1 年（2026-11 ~ 2027-11）**，建议每周投入 **10 ~ 12 小时**（工作日每天 1~1.5h，周末 3~5h）
-> **配套资源**：Google Skills / Cloud Skills Boost 平台课程 + Google AI Studio / Google Cloud（\$30 开发者额度）
+> **配套资源**：Google Skills / Cloud Skills Boost 平台课程 + Google AI Studio / Google Cloud（每月 \$10 赠金额度）
 
 ---
 
@@ -26,12 +26,12 @@
 ## 一、核心战略与技术栈定位
 
 ### 1. 差异化竞争壁垒（最大化复用既有经验）
-- **Web 端护城河（React）**：不做千篇一律的纯文本聊天框，重点打造 **Generative UI（流式动态组件渲染、精准引用溯源高亮、交互式结果卡片）**。
-- **移动端护城河（Flutter / Android）**：打造结合相机、实时语音、系统本地能力与端侧模型的 **端云协同多模态 Agent**。
+- **Web 控制台护城河（React + Ant Design）**：不做千篇一律的纯文本聊天框，重点打造 **Generative UI（流式动态组件渲染、精准引用溯源高亮、交互式结果卡片）** 与 RAG 评测看板。
+- **移动 H5 护城河（React + Ant Design H5 / PWA）**：免安装、手机浏览器即开即用，结合 HTML5 相机拍照压缩、Web Speech 语音输入、浏览器本地隐私脱敏与 `.ics` 日历导出的 **跨端多模态 Agent**。
 
-### 2. 生产级技术栈（零 Python 主栈 + 多模型兼容）
-- **AI 后端与编排层（BFF）**：TypeScript + Node.js（Next.js Route Handlers / Hono）、Google `@google/genai`、**Vercel AI SDK**、**OpenAI 兼容协议**（无缝切换 Gemini / DeepSeek / Qwen / Claude）、**MCP TypeScript SDK**、LangGraph.js / Genkit JS。
-- **客户端层**：React / Next.js（Web）+ Flutter / Android Kotlin（移动端多模态 + 端侧 ML Kit / Gemini Nano）。
+### 2. 生产级技术栈（零 Python 主栈 + 纯 TS/React 统一栈 + 多模型兼容）
+- **AI 后端与编排层（BFF）**：TypeScript + Node.js（Hono / Next.js Route Handlers）、Google `@google/genai`、**Vercel AI SDK**、**OpenAI 兼容协议**（无缝切换 Gemini / DeepSeek / Qwen / Claude）、**MCP TypeScript SDK**、LangGraph.js / Genkit JS。
+- **客户端层**：React 19 + Ant Design 5 + Vite（PC 控制台 `web-console` + 移动 H5 `mobile-h5`，共享 `@omnimind/shared-schema`）。
 - **检索与数据层**：Embedding API + 向量数据库（Supabase `pgvector` 或 Qdrant JS SDK）+ Rerank 重排。
 - **工程质量与云原生**：**Langfuse**（链路追踪）+ TypeScript **自动化 Eval 评测** + Docker + **Google Cloud Run** / Cloud Storage / IAM。
 
@@ -61,7 +61,7 @@
 
 - [ ] **第 1 周：市场校准 + 概念扫盲 + 环境与预算配置**
   - **学习/调研**：在招聘平台收集 20~30 份目标城市的「AI 前端 / AI 全栈 / AI 移动端」真实 JD，提炼高频技术词；学完 **`Introduction to Generative AI`**（45m）。
-  - **实操交付**：开通 Google AI Studio API Key，在 Google Cloud 配置 **\$30 预算告警**；初始化 GitHub 学习主仓库，输出《目标岗位技能矩阵清单》。
+  - **实操交付**：开通 Google AI Studio API Key，在 Google Cloud 配置 **\$10/月 预算告警**；初始化 GitHub 学习主仓库，输出《目标岗位技能矩阵清单》。
 - [ ] **第 2 周：Gen AI SDK 实战与多模态调通（TypeScript）**
   - **学习**：完成 **`Getting Started with Google Generative AI Using the Gen AI SDK`**（30m Lab）；系统学习 System Instruction、Temperature / Top-P / MaxTokens 参数机制。
   - **实操交付**：初始化 Node.js + TypeScript 工程，使用 `@google/genai` 编写文本对话、多轮上下文维护、本地图片上传理解（Multimodal）命令行/接口脚本。
@@ -127,11 +127,11 @@
 
 ---
 
-### 阶段 3（第 23 ~ 38 周 | 2027.05 中旬 - 2027.08 下旬）：中期试投 + 跨端多模态 Agent + MCP + 云原生（作品集项目 2）
-> **阶段目标**：通过中期真实面试校准市场需求；结合 **Flutter / Android** 强项与 **TS Agent 后端** 打造跨端多模态王牌项目，并用 Docker + Cloud Run 完成云原生上线。
+### 阶段 3（第 23 ~ 38 周 | 2027.05 中旬 - 2027.08 下旬）：中期试投 + 移动 H5 多模态 Agent + MCP + 云原生（作品集项目 2）
+> **阶段目标**：通过中期真实面试校准市场需求；结合 **React + Ant Design 移动 H5** 与 **TS Agent 后端** 打造跨端多模态王牌项目，并用 Docker + Cloud Run 完成云原生上线。
 
 - [ ] **第 23 周：简历 v1 整理与中期试投准备**
-  - **实操交付**：产出第一版转型简历（突出 React/Flutter/Android 既有研发功底 + Google Skill Badge + 项目 1 的 Generative UI 与 Eval 数据），梳理项目 1 面试讲稿。
+  - **实操交付**：产出第一版转型简历（突出 React + TypeScript 全栈研发功底 + 过往移动端经验 + Google Skill Badge + 项目 1 的 Generative UI 与 Eval 数据），梳理项目 1 面试讲稿。
 - [ ] **第 24 周：中期市场试投摸底（一）**
   - **实操交付**：在招聘平台小批量定向投递 **10~15 家** AI 前端 / AI 全栈 / AI 移动端岗位，争取 2~4 场真实面试，检验市场反馈。
 - [ ] **第 25 周：中期试投复盘与下半程校准（二）**
@@ -149,25 +149,25 @@
   - **实操交付**：实现工具参数 Schema 校验失败时的模型自修复重试机制；针对敏感写操作（如删除数据、发送邮件、创建日程），实现**流式挂起等待客户端用户点击“批准/拒绝”后再继续执行**的闭环。
 - [ ] **第 30 周：作品集项目 2 立项与 TS Agent BFF 层开发**
   - **实操交付**：正式立项 **项目 2：跨端多模态个人/业务效率 Agent**，设计自定义多通道 SSE 协议（区分 `thinking` 思考链、`tool_call` 工具执行状态、`approval_request` 审批卡片、`text_delta` 文本流），完成 TS 后端主体开发。
-- [ ] **第 31 周：移动端差异化实战（一）——Flutter / Android 高可靠流式客户端**
-  - **实操交付**：基于你熟悉的 **Flutter（或 Android Kotlin）** 初始化移动客户端工程，封装生产级 SSE 流式网络层（支持断网重连、后台切前台状态恢复、流式 Markdown 与代码块丝滑渲染、低帧率防抖优化）。
-- [ ] **第 32 周：移动端差异化实战（二）——原生相机与语音多模态接入**
-  - **实操交付**：在移动端接入相机拍照/相册选图（客户端端侧压缩裁剪）与语音录制输入，对接后端多模态大模型（例如：拍一张白板会议记录/票据/报错屏幕 + 语音说一句话，Agent 自动提取结构化信息并执行后续动作）。
-- [ ] **第 33 周：移动端差异化实战（三）——端云工具联动与原生交互卡片**
-  - **实操交付**：打通「云端 Agent 决策 → 下发客户端 Tool 指令 → Flutter/Android 调用系统日历/本地提醒/剪贴板/原生审批弹窗 → 回传执行结果给云端继续推理」的完整端云协同链路。
-- [ ] **第 34 周：端侧 AI 探索（Android Gemini Nano / ML Kit 加分项）**
-  - **学习**：调研学习 Android **ML Kit GenAI APIs / Gemini Nano**（或端侧轻量推理引擎）的适用场景与硬件限制。
-  - **实操交付**：设计并验证“端侧离线快速摘要/敏感文本预处理 + 复杂多步工具编排路由至云端”的端云混合架构（即使部分设备受限，也要写出清晰的降级策略与架构文档，面试极具辨识度）。
+- [ ] **第 31 周：移动 H5 差异化实战（一）——React + Ant Design H5 高可靠流式客户端**
+  - **实操交付**：完善 `apps/mobile-h5`（React 19 + Ant Design 5 + Vite），封装生产级 SSE 流式网络层（支持断网重连、切后台恢复、流式 Markdown 与代码块丝滑渲染、360px 小屏与安全区适配）。
+- [ ] **第 32 周：移动 H5 差异化实战（二）——HTML5 相机压缩与 Web Speech 语音多模态接入**
+  - **实操交付**：在移动 H5 中打通 HTML5 相机拍照/相册选图（前端 Canvas 端侧压缩裁剪）与 Web Speech API 语音输入，对接后端多模态大模型（拍一张白板/票据/报错截图 + 语音指令，Agent 自动提取结构化信息并执行后续动作）。
+- [ ] **第 33 周：移动 H5 差异化实战（三）——端云工具联动与原生交互卡片**
+  - **实操交付**：打通「云端 Agent 决策 → 下发客户端 Tool 指令 → H5 弹出 Ant Design 审批卡片 → 用户批准后导出 `.ics` 日程导入手机系统日历 / 写入剪贴板 → 回传执行结果给云端继续推理」的完整闭环。
+- [ ] **第 34 周：浏览器端侧 AI 与隐私护栏探索（WebGPU / Transformers.js 加分项）**
+  - **学习**：调研学习浏览器端侧 AI（Chrome Prompt API / WebLLM / Transformers.js）与本地隐私正则脱敏的适用场景与边界。
+  - **实操交付**：完善“浏览器端侧敏感信息脱敏预处理 + 复杂多步工具编排路由至云端”的端云混合架构与降级策略文档。
 - [ ] **第 35 周：云原生基础补齐（Docker + Google Cloud Storage + IAM）**
   - **学习**：结合 Google Skills **`云架构`** 方向，学习容器多阶段构建、对象存储签名上传与 IAM 最小权限原则。
-  - **实操交付**：为 TS Agent 后端编写体积精简的多阶段 `Dockerfile` 本地跑通；配置 **Google Cloud Storage** 实现移动端图片/音频安全上传，并配置服务账号 IAM 权限。
+  - **实操交付**：为 TS Agent 后端编写体积精简的多阶段 `Dockerfile` 本地跑通；配置 **Google Cloud Storage** 实现 H5 端图片/音频安全上传，并配置服务账号 IAM 权限。
 - [ ] **第 36 周：Google Cloud Run 容器化公网部署**
-  - **实操交付**：结合账号 **\$30 额度**，将容器镜像推送并部署至 **Google Cloud Run**，配置 Secret Manager / 环境变量保护 API Key、设置最大实例数防止意外超支，打通真机 App 直连公网 Cloud Run 服务。
+  - **实操交付**：结合账号 **每月 \$10 赠金额度**，将容器镜像推送并部署至 **Google Cloud Run**，配置 Secret Manager / 环境变量保护 API Key、设置最大实例数防止意外超支，打通手机浏览器直连公网 H5 + Cloud Run 服务。
 - [ ] **第 37 周：截图进阶路径选学——MLOps 与生产运维视野**
   - **学习**：选学 **`Deploy and Manage Generative AI Models`**（18h30m Path）中的云端服务部署、版本管理、线上监控告警与延迟优化核心章节（精选约 4~6 小时与工程落地强相关内容，跳过底层 Python 训练细节）。
   - **实操交付**：为项目 2 补齐请求日志监控、错误率统计与接口超时熔断配置。
 - [ ] **第 38 周：项目 2 评测压测与全套交付物归档**
-  - **实操交付**：设计 20 个多步工具调用测试场景评估 Agent 任务一次完成率（Task Success Rate）；打出 Android Release APK（确保无崩溃、无布局溢出），录制「真机语音拍照 + 工具审批 + 云端联动」高清演示视频，完善项目 2 GitHub 文档。
+  - **实操交付**：设计 20 个多步工具调用测试场景评估 Agent 任务一次完成率（Task Success Rate）；完成手机真机浏览器（iOS Safari / Android Chrome）多分辨率兼容回归，录制「手机 H5 拍照语音 + 工具审批 + 日历导入」高清演示视频，完善项目 2 GitHub 文档。
 
 ---
 
@@ -175,7 +175,7 @@
 > **阶段目标**：将两个核心项目与全栈/移动端 AI 知识体系打磨至资深面试标准，完成高转化率求职投递并拿到满意 Offer。
 
 - [ ] **第 39 周：GitHub 门面与双项目终极质检**
-  - **实操交付**：优化 GitHub 个人主页，置顶项目 1（Web Generative UI + RAG）与项目 2（Flutter/Android + TS MCP Agent）；复查所有在线 Demo 链接秒开、补充首字延迟（TTFT）与 Token 成本优化前后对比数据。
+  - **实操交付**：优化 GitHub 个人主页，置顶项目 1（Web Generative UI + RAG）与项目 2（React Ant Design 移动 H5 + TS MCP Agent）；复查所有在线 Demo 链接秒开、补充首字延迟（TTFT）与 Token 成本优化前后对比数据。
 - [ ] **第 40 周：面试专题复盘（一）——大模型基础与 Prompt / 结构化工程**
   - **复习重点**：Transformer 宏观推理机制（KV Cache 概念对延迟与上下文成本的影响）、Tokenizer、采样参数（Temperature / Top-P）、System Prompt 防护、JSON Schema 受限解码原理。
   - **交付**：整理成自己的口语化面试问答笔记（拒绝死记硬背）。
@@ -183,12 +183,12 @@
   - **复习重点**：文档解析坑点、Chunking 粒度权衡、向量检索原理、Query 改写、混合检索（RRF）与 Rerank 收益、幻觉治理、RAG Eval 评测体系设计（紧密结合项目 1 真实数据作答）。
 - [ ] **第 42 周：面试专题复盘（三）——Agent 架构、MCP 与上下文工程**
   - **复习重点**：ReAct vs Plan-and-Execute、状态机容错、Function Calling 死循环预防、长对话 Context 压缩策略、MCP 协议解决的核心痛点、Human-in-the-Loop 与安全护栏（紧密结合项目 2 作答）。
-- [ ] **第 43 周：面试专题复盘（四）——React / Flutter / Android × AI 交叉高频题**
-  - **复习重点**：SSE vs WebSocket 选型权衡、React 高频流式 Token 渲染防卡顿优化、Generative UI 协议设计、移动端弱网断线续传、音频/图片端侧预处理、端云协同架构权衡。
+- [ ] **第 43 周：面试专题复盘（四）——React Web / 移动 H5 × AI 交叉高频题**
+  - **复习重点**：SSE vs WebSocket 选型权衡、React 高频流式 Token 渲染防卡顿优化、Generative UI 协议设计、移动 H5 弱网断线续传、Canvas 图片压缩与浏览器端侧隐私脱敏、端云协同架构权衡。
 - [ ] **第 44 周：AI 系统架构设计题专项演练**
   - **实操演练**：独立画出并脱稿讲透 3 道经典系统设计题：① 支持千人并发与权限隔离的企业级 RAG 知识库；② 低延迟跨端多模态 AI 助手架构；③ 多模型路由网关（降本、限流、容灾 Fallback）。
 - [ ] **第 45 周：双版本精准简历定稿与 STAR 故事打磨**
-  - **实操交付**：分别定制 **《AI 全栈/前端开发工程师》**（侧重 React + Next.js + TS + Generative UI + RAG）与 **《AI 移动端应用开发工程师》**（侧重 Flutter/Android + 多模态交互 + 端云 Agent）两版简历；为每个项目提炼 3 个「痛点 → 排查 → 方案权衡 → 量化提升」的 STAR 案例。
+  - **实操交付**：分别定制 **《AI 全栈开发工程师》**（侧重 TypeScript + Hono + RAG + MCP + LangGraph + Cloud Run）与 **《AI 前端 / 移动 H5 工程师》**（侧重 React 19 + Ant Design 5 + Generative UI + 移动 H5 多模态交互）两版简历；为每个项目提炼 3 个「痛点 → 排查 → 方案权衡 → 量化提升」的 STAR 案例。
 - [ ] **第 46 周：全真模拟面试与高频手写代码热身**
   - **实操演练**：打磨 3 分钟高说服力自我介绍（突出“成熟客户端/前端工程经验 + 端到端 AI 应用落地能力”的复合优势）；手写练习高频 Coding 题（TS 异步并发池控制、SSE 流解析器、带退避的自动重试函数、常用数据结构题）。
 - [ ] **第 47 周：全量投递第一波（热身批 20~30 家）**
@@ -209,8 +209,8 @@
 ## 四、执行纪律与安全红线
 
 1. **周度闭环原则**：每周末用 15 分钟在下方进度表打卡，若当周因加班/事务落后，次周优先砍掉非核心扩展阅读，**绝不砍代码产出**。
-2. **安全与账单红线**：所有大模型 API Key 严禁硬编码在 React 前端或 Flutter/Android 客户端安装包中，必须走服务端环境变量；首周务必设好 **Google Cloud \$30 预算告警**。
-3. **坚持主栈，开放阅读**：编码全程坚持 **TypeScript + React + Flutter/Android**，遇到仅提供 Python 示例的前沿开源库或文档时，直接提炼其 Prompt 与接口调用逻辑并用 TS 复现。
+2. **安全与账单红线**：所有大模型 API Key 严禁硬编码在 React Web 或 H5 前端代码中，必须走服务端环境变量；首周务必设好 **Google Cloud \$10/月 预算告警**。
+3. **坚持主栈，开放阅读**：编码全程坚持 **TypeScript + React + Ant Design（Web & H5）**，遇到仅提供 Python 示例的前沿开源库或文档时，直接提炼其 Prompt 与接口调用逻辑并用 TS 复现。
 
 ---
 
@@ -218,7 +218,8 @@
 
 | 日期 / 周次 | 完成内容 | 仓库链接 / 笔记与遇到的问题 |
 | :--- | :--- | :--- |
-| 2026-11-21（准备期） | 制定并升级至 v3（52 周逐周细化版）学习计划 | 确立 `TS + React + Flutter/Android` 零 Python 主栈路线，映射截图全部 8 门课程并拆解到第 1~52 周 |
+| 2026-11-21（准备期） | 制定并升级至 v3（52 周逐周细化版）学习计划 | 确立零 Python 主栈路线，映射截图全部 8 门课程并拆解到第 1~52 周 |
+| 2026-11-25（架构简化） | 移除 Flutter 原生工程，全面切为 React + Ant Design H5 | 免除 Flutter/Xcode/Android SDK 环境折腾，全仓统一为 `TS + React + Antd (Web & H5)` |
 | 第 1 周 | 待打卡 | |
 | 第 2 周 | 待打卡 | |
 | 第 3 周 | 待打卡 | |

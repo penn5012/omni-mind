@@ -1,6 +1,6 @@
 # 03. OmniMind 前后端技术架构与 Monorepo 工程规范
 
-> **技术路线红线**：全程采用 **TypeScript + Flutter + React（零 Python 主栈）**。
+> **技术路线红线**：全程采用 **TypeScript + React + Ant Design（PC 控制台 & 移动 H5，零 Python 主栈、免原生 App 环境）**。
 > **工程组织模式**：采用 **Full-Stack AI Monorepo** 架构，将前后端、共享 Schema、自定义 MCP Server 与自动化 Eval 套件统一编排，按目录严格物理隔离。
 
 ---
@@ -11,14 +11,14 @@
 
 1. **AI 流式协议与 Generative UI Schema 强一致（Single Source of Truth）**
    - AI 应用的核心复杂度在于「后端 SSE 多通道事件流」与「前端动态卡片渲染器」的契约同步。
-   - 在 Monorepo 下，`packages/shared-schema` 定义的 `Zod` / TypeScript 类型可以直接被后端 `apps/bff-server` 和前端 `apps/web-console` 引用，并为 `apps/mobile-flutter` 生成对应的 Dart Model，彻底杜绝前后端字段不一致导致的解析崩溃。
+   - 在 Monorepo 下，`packages/shared-schema` 定义的 `Zod` / TypeScript 类型可以直接被后端 `apps/bff-server`、移动 H5 `apps/mobile-h5` 和桌面端 `apps/web-console` 原生共享引用，零跨语言代码生成成本，彻底杜绝前后端字段不一致导致的解析崩溃。
 2. **面试官 30 秒黄金审阅体验**
    - 面试官点击简历上的 GitHub 链接时，通常只停留 30~60 秒。
-   - 单一旗舰级 Monorepo 仓库能在根目录集中展示完整的端到端系统架构图、RAG Eval 评测对比报告与真机演示视频，下一层目录清晰呈现 `bff-server`、`mobile-flutter`、`web-console`、`mcp-server`、`eval-suite`，一眼体现候选人的**全栈 AI 工程把控力**。
+   - 单一旗舰级 Monorepo 仓库能在根目录集中展示完整的端到端系统架构图、RAG Eval 评测对比报告与演示视频，下一层目录清晰呈现 `bff-server`、`mobile-h5`、`web-console`、`mcp-server`、`eval-suite`，一眼体现候选人的**全栈 AI 工程把控力**。
 3. **一次 Commit 完成端到端特性闭环**
-   - 新增一张动态卡片或新增一个端侧 Tool 时，可以在同一个 Commit / Issue 中闭环「后端 Prompt/Tool 定义 + 前端 Widget 渲染 + 冒烟测试」，无需跨多个仓库同步版本号。
+   - 新增一张动态卡片或新增一个端侧 Tool 时，可以在同一个 Commit / Issue 中闭环「后端 Prompt/Tool 定义 + React/Antd 动态卡片渲染 + 冒烟测试」，无需跨多个仓库同步版本号。
 4. **独立部署与 CI/CD 完全解耦**
-   - 放在同一仓库不等于耦合打包：`apps/bff-server` 拥有独立的 `Dockerfile` 部署至 **Google Cloud Run**；`apps/mobile-flutter` 独立构建 Android Release APK；`apps/web-console` 独立部署至 Vercel。
+   - 放在同一仓库不等于耦合打包：`apps/bff-server` 拥有独立的 `Dockerfile` 部署至 **Google Cloud Run**；`apps/mobile-h5` 与 `apps/web-console` 可独立构建静态产物部署至 Vercel / Cloudflare Pages / Nginx。
 
 ---
 
@@ -39,8 +39,8 @@ omni-mind/ (OmniMind Monorepo)
 │       └── index.html                 # 可在浏览器直接交互的高保真 HTML UI 原型
 ├── apps/                              # [生产应用区 - 前后端核心代码]
 │   ├── bff-server/                    # 后端：TypeScript + Hono + @google/genai + LangGraph.js
-│   ├── mobile-flutter/                # 移动端：Flutter 3.x + Riverpod + 端侧 ML Kit + 系统日历
-│   └── web-console/                   # Web 端：Next.js 15 + React 19 + Generative UI + RAG 看板
+│   ├── mobile-h5/                     # 移动 H5 端：React 19 + Ant Design 5 + Vite + 相机/语音/.ics 日历
+│   └── web-console/                   # PC Web 端：React 19 + Ant Design 5 + Generative UI + RAG 看板
 ├── packages/                          # [核心 AI 模块与评测区]
 │   ├── shared-schema/                 # 前后端共享的 SSE 事件协议与动态卡片 Zod Schema
 │   ├── mcp-server/                    # 自定义 MCP (Model Context Protocol) 工具服务端
@@ -57,7 +57,7 @@ omni-mind/ (OmniMind Monorepo)
 
 | 技术层级 | 选定框架 / 核心库 | 核心职责与工程选型理由 |
 | :--- | :--- | :--- |
-| **移动端客户端 (`apps/mobile-flutter`)** | **Flutter 3.x (Dart 3)** + `flutter_riverpod` + `dio` | 跨端高帧率渲染 Generative UI 原生卡片；利用 `Riverpod` 管理多通道 SSE 流式状态；通过 `image_picker`、`record`、`device_calendar`、`google_mlkit_text_recognition` 打通手机原生能力 |
+| **移动 H5 客户端 (`apps/mobile-h5`)** | **React 19** + **Ant Design 5.x (`antd` + `@ant-design/icons`)** + **Vite 6** | 替代原生 App，手机浏览器免安装即开即用；针对 `360px ~ 480px` 移动视口、安全区与底部 `Drawer` 深度优化；集成 HTML5 相机 + Canvas 压缩、Web Speech 语音输入、本地正则隐私脱敏与 `.ics` 日历导出 |
 | **Web 客户端 (`apps/web-console`)** | **React 19** + **Ant Design 5.x (`antd` + `@ant-design/icons`)** + **Vite / Next.js** | 复用既有 React 优势，基于 Ant Design `ConfigProvider` Design Token 主题定制，共用同一套 TS BFF，负责大屏流式问答、知识库文档批量管理与 Eval 评测可视化看板 |
 | **AI 后端 BFF (`apps/bff-server`)** | **Hono (Node.js + TypeScript)** + **Zod** | 原生支持 Web Standard `streamSSE`，体积轻量、冷启动极快，完美契合 Google Cloud Run 容器化部署 |
 | **大模型与网关层** | **`@google/genai`** + **Vercel AI SDK (`ai`)** | 主力调用 `gemini-2.5-flash` / `gemini-2.5-pro` 及 `text-embedding-004`；通过 OpenAI 兼容层接入 `DeepSeek-V3` / `Qwen-Max` 实现超时自动 Fallback |

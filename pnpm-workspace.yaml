@@ -2,6 +2,7 @@ packages:
   - "packages/*"
   - "apps/bff-server"
   - "apps/web-console"
+  - "apps/mobile-h5"
 
 allowBuilds:
   '@google/genai': set this to true or false

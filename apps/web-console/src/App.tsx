@@ -69,8 +69,8 @@ const INITIAL_CITATION: CitationItem = {
   createdAt: '2026-11-15 16:20',
   rrfScore: 0.92,
   snippet:
-    '...确定全程采用 TypeScript + Flutter + React (Ant Design) 路线。关于云端算力开销，月度 API 与云服务预算上限严格控制在 $30.00 以内，首周必须在 Google Cloud 配置预算告警，优先使用 Gemini 2.5 Flash...',
-  highlightedTerm: '月度 API 与云服务预算上限严格控制在 $30.00 以内',
+    '...确定全程采用 TypeScript + React + Ant Design (Web & H5) 路线。关于云端算力开销，月度 API 与云服务预算上限严格控制在 $10.00 以内，首周必须在 Google Cloud 配置预算告警，优先使用 Gemini 2.5 Flash...',
+  highlightedTerm: '月度 API 与云服务预算上限严格控制在 $10.00 以内',
   tags: ['#预算告警', '#GoogleCloud', '#AntDesign'],
 };
 
@@ -84,7 +84,7 @@ const INITIAL_MESSAGES: ChatMessageItem[] = [
   {
     id: 'msg_ai_1',
     role: 'assistant',
-    text: '根据您上周归档的《Q4 AI 基建预算纪要》[1]，您的 Google Cloud 与大模型月度预算上限严格设定为 $30.00（当前累计消耗 $4.20）。\n\n同时，已从白板照片中提取出架构评审日程，写入系统日历前请确认审批：',
+    text: '根据您上周归档的《Q4 AI 基建预算纪要》[1]，您的 Google Cloud 与大模型月度预算上限严格设定为 $10.00（当前累计消耗 $4.20）。\n\n同时，已从白板照片中提取出架构评审日程，写入系统日历前请确认审批：',
     thinking: {
       durationMs: 1120,
       steps: [
@@ -280,7 +280,7 @@ export function App() {
                   ...m,
                   text:
                     m.text ||
-                    '⚠️ 连接 BFF 服务超时，已启用本地容灾响应：根据《Q4 预算纪要》[1]，月度算力上限为 $30.00。',
+                    '⚠️ 连接 BFF 服务超时，已启用本地容灾响应：根据《Q4 预算纪要》[1]，月度算力上限为 $10.00。',
                   citations: [INITIAL_CITATION],
                 }
               : m

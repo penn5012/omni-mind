@@ -1,0 +1,91 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  height: 100dvh;
+  overflow: hidden;
+  background-color: #06090f;
+  color: #f8fafc;
+  font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Segoe UI', Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.h5-shell {
+  width: 100%;
+  max-width: 480px;
+  height: 100%;
+  height: 100dvh;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  background-color: #0b0f17;
+  overflow: hidden;
+  position: relative;
+}
+
+@media (min-width: 481px) {
+  .h5-shell {
+    border-left: 1px solid #2a344b;
+    border-right: 1px solid #2a344b;
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.55);
+  }
+}
+
+.h5-header {
+  flex-shrink: 0;
+  padding-top: env(safe-area-inset-top, 0px);
+  background-color: #161c28;
+  border-bottom: 1px solid #2a344b;
+  z-index: 10;
+}
+
+.h5-stream-container {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.h5-quick-bar {
+  flex-shrink: 0;
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 8px 12px;
+  background-color: #0b0f17;
+  border-top: 1px solid #2a344b;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.h5-quick-bar::-webkit-scrollbar {
+  display: none;
+}
+
+.h5-composer {
+  flex-shrink: 0;
+  background-color: #161c28;
+  border-top: 1px solid #2a344b;
+  padding: 10px 12px calc(10px + env(safe-area-inset-bottom, 0px));
+}
+
+.h5-break-word {
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}

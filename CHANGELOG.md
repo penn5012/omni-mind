@@ -2,6 +2,20 @@
 
 All notable changes to the **OmniMind (`penn5012/omni-mind`)** full-stack AI project are documented in this file.
 
+## [v2026.11.25] - 2026-11-25 (Migrate Mobile Client from Flutter to React + Ant Design H5)
+
+### ✨ Added
+- **Mobile H5 Client (`apps/mobile-h5`)**:
+  - Replaced Flutter native app with a zero-native-setup Mobile H5 web application (`@omnimind/mobile-h5`, port `3002`, `--host` enabled for LAN phone preview) built with **React 19 + TypeScript + Ant Design 5 + Vite 6**.
+  - Implemented mobile-first viewport (`100dvh`, `safe-area-inset-*`), `480px` desktop shell framing, horizontally scrollable quick-scenario pill bar, and bottom `Drawer` sheets for RAG Citation (`[1]`), Personal Memory Bank, and Multi-Model Router configuration.
+  - Added H5 browser-native capabilities: HTML5 camera/photo upload (`capture="environment"`) with Canvas compression, client-side regex privacy masking (phone / ID numbers), Web Speech API voice input, and `.ics` calendar export for Human-in-the-Loop schedule approval.
+
+### 🗑️ Removed
+- Removed `apps/mobile-flutter` and Flutter/Android-specific ignore rules to unify the entire Monorepo on **TypeScript + React + Ant Design**.
+
+### 📝 Changed
+- Updated `pnpm-workspace.yaml`, root `package.json` (`dev:h5`, `build`), `LEARNING_PLAN.md`, `README.md`, and `docs/01~04` to reflect the unified **TypeScript + React + Ant Design (Web & H5)** architecture.
+
 ## [v2026.11.22] - 2026-11-22 (Milestone 1 `v0.1.0` Baseline)
 
 ### ✨ Added

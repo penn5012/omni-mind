@@ -1,6 +1,6 @@
 # 02. OmniMind 详细 UI / UX 设计规范与高保真原型图（零 Figma 工程版）
 
-> **设计原则**：完全不依赖 Figma，直接采用**「工程级 Design Token + 高保真 HTML 交互原型 + Ant Design 5 / Flutter 组件树映射规格」**驱动 Flutter 与 React 双端开发。
+> **设计原则**：完全不依赖 Figma，直接采用**「工程级 Design Token + 高保真 HTML 交互原型 + Ant Design 5（PC 控制台 & 移动 H5）组件树映射规格」**驱动全端 React 开发。
 > **交互原型预览**：可在浏览器直接打开仓库内的 [docs/ui-prototype/index.html](./ui-prototype/index.html) 交互体验全部 5 大核心屏幕与 4 类动态卡片。
 
 ---
@@ -9,7 +9,7 @@
 
 ### 1. 色彩系统 (`AppColors`)
 
-| Token 名称 | Hex 色值 | 适用场景 | Flutter / React 语义角色 |
+| Token 名称 | Hex 色值 | 适用场景 | React / Ant Design 语义角色 |
 | :--- | :--- | :--- | :--- |
 | `bgPrimary` | `#0B0F17` | App 主工作台底层背景 | 全局 Scaffold / Body 背景 |
 | `bgSurface` | `#161C28` | AI 消息容器、动态卡片背景、底部输入舱 | Card / BottomSheet 基础表面 |
@@ -26,22 +26,22 @@
 
 ### 2. 字体与间距阶梯 (`AppTypography`, `AppSpacing`, `AppRadius`)
 
-```dart
-// Flutter Design Token 标准定义示例 (lib/core/theme/app_tokens.dart)
-class AppSpacing {
-  static const double xs = 4.0;
-  static const double sm = 8.0;
-  static const double md = 12.0;
-  static const double lg = 16.0;
-  static const double xl = 24.0;
-}
+```typescript
+// React Design Token 标准定义 (apps/mobile-h5/src/theme/tokens.ts)
+export const AppSpacing = {
+  xs: 4,
+  sm: 8,
+  md: 12,
+  lg: 16,
+  xl: 24,
+} as const;
 
-class AppRadius {
-  static const double sm = 8.0;
-  static const double md = 12.0;
-  static const double lg = 16.0;
-  static const double full = 999.0;
-}
+export const AppRadius = {
+  sm: 8,
+  md: 12,
+  lg: 16,
+  full: 999,
+} as const;
 ```
 
 ---
@@ -75,7 +75,7 @@ class AppRadius {
 |  | +-------------------------------------------------------------+ |  |
 |  |                                                                 |  |
 |  | 根据上周的《Q4 AI 基建预算纪要》[1]，你的月度 API 预算上限为     |  |  <-- 组件 B：流式 Markdown + 角标
-|  | **$30.00**（当前已消耗 $4.20）。                                |  |
+|  | **$10.00**（当前已消耗 $4.20）。                                |  |
 |  | 同时，我为你准备了架构评审的日程写入请求，请确认：               |  |
 |  |                                                                 |  |
 |  | +-------------------------------------------------------------+ |  |
@@ -169,7 +169,7 @@ class AppRadius {
 |  📝 召回原文切片 (命中关键词高亮)：                                   |
 |  +-----------------------------------------------------------------+  |
 |  | "...确定全程采用 TypeScript + Flutter 路线。关于云端算力开销，  |  |
-|  |  【月度 API 与云服务预算上限严格控制在 $30.00 以内】，首周必须  |  |
+|  |  【月度 API 与云服务预算上限严格控制在 $10.00 以内】，首周必须  |  |
 |  |  在 Google Cloud 配置预算告警，优先使用 Gemini 2.5 Flash..."    |  |
 |  +-----------------------------------------------------------------+  |
 |                                                                       |
@@ -207,15 +207,15 @@ class AppRadius {
 
 ---
 
-## 三、组件树架构映射（Flutter & React 双端对齐）
+## 三、组件树架构映射（移动 H5 & PC 控制台对齐）
 
-| 视觉区域 | Flutter Widget 命名 (`apps/mobile-flutter`) | React 组件命名 (`apps/web-console`) |
+| 视觉区域 | 移动 H5 组件 (`apps/mobile-h5`) | PC 控制台组件 (`apps/web-console`) |
 | :--- | :--- | :--- |
-| **工作台主页面** | `OmniWorkbenchPage` | `<OmniWorkbench />` |
-| **顶部状态与模型栏** | `OmniTopAppBar` | `<TopModelBar />` |
-| **消息流列表** | `ChatStreamListView` | `<ChatStreamList />` |
-| **思考链折叠组件** | `ThinkingAccordionWidget` | `<ThinkingAccordion />` |
-| **带角标 Markdown 渲染** | `CitedMarkdownBody` | `<CitedMarkdown />` |
-| **动态卡片分发工厂** | `GenerativeCardFactory` | `<GenerativeCardRenderer />` |
-| **溯源半屏抽屉** | `CitationSourceBottomSheet` | `<CitationDrawer />` |
-| **底部多模态输入舱** | `MultimodalComposerBar` | `<MultimodalComposer />` |
+| **工作台主页面** | `<App />` (`.h5-shell` 移动安全区布局) | `<App />` (`Layout` 大屏容器) |
+| **顶部状态与模型栏** | `<TopModelBar />` | `<Header />` |
+| **思考链折叠组件** | `<ThinkingAccordion />` | Ant Design `<Collapse />` |
+| **动态卡片分发工厂** | `<GenerativeCardRenderer />` | `renderGenerativeCard()` |
+| **溯源半屏抽屉** | `<CitationDrawer />` (底部 Drawer) | `<Drawer placement="bottom" />` |
+| **个人记忆库抽屉** | `<MemoryDrawer />` (底部 Drawer) | 记忆库面板 |
+| **模型路由配置** | `<ModelRouterDrawer />` (底部 Drawer) | `<Modal />` |
+| **底部多模态输入舱** | `<MultimodalComposer />` (相机/语音/横向胶囊) | `<Footer />` |

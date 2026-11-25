@@ -24,8 +24,8 @@ const MEMORY_BANK: CitationItem[] = [
     createdAt: '2026-11-15 16:20',
     rrfScore: 0.92,
     snippet:
-      '...确定全程采用 TypeScript + Flutter 路线。关于云端算力开销，月度 API 与云服务预算上限严格控制在 $30.00 以内，首周必须在 Google Cloud 配置预算告警，优先使用 Gemini 2.5 Flash...',
-    highlightedTerm: '月度 API 与云服务预算上限严格控制在 $30.00 以内',
+      '...确定全程采用 TypeScript + React + Ant Design (Web & H5) 路线。关于云端算力开销，月度 API 与云服务预算上限严格控制在 $10.00 以内，首周必须在 Google Cloud 配置预算告警，优先使用 Gemini 2.5 Flash...',
+    highlightedTerm: '月度 API 与云服务预算上限严格控制在 $10.00 以内',
     tags: ['#预算告警', '#GoogleCloud', '#技术规划'],
   },
   {
@@ -177,7 +177,7 @@ function buildScenarioPayload(
       citations: [MEMORY_BANK[0]],
       markdownChunks: [
         '已为您汇总 **11 月份个人记忆库消费数据**（对照《Q4 AI 基建预算纪要》[1]）：\n\n',
-        '本月总计支出 **¥3,420.00**，其中云服务与 API 消耗仍严格控制在 **$30.00** 红线内：',
+        '本月总计支出 **¥3,420.00**，其中云服务与 API 消耗仍严格控制在 **$10.00** 红线内：',
       ],
       uiCard: {
         cardType: 'analytics_card',
@@ -189,7 +189,7 @@ function buildScenarioPayload(
           { label: '云服务与数码订阅', amount: 980, percent: 29, colorToken: 'accentCyan' },
           { label: '交通出行', amount: 920, percent: 27, colorToken: 'statusSuccess' },
         ],
-        aiInsight: 'AI 洞察：云服务 API 累计消耗 $4.20，远低于 $30.00 预算上限。',
+        aiInsight: 'AI 洞察：云服务 API 累计消耗 $4.20，远低于 $10.00 预算上限。',
       },
       usage: {
         ttftMs: 295,
@@ -226,13 +226,13 @@ function buildScenarioPayload(
       citations: MEMORY_BANK,
       markdownChunks: [
         '根据您归档的《Q4 AI 基建预算纪要》[1] 与《多通道 SSE 流式网关设计笔记》[2]：\n\n',
-        '1. **月度算力预算红线**：Google Cloud 与大模型 API 预算上限严格设定为 **$30.00 / 月**（当前已消耗 $4.20）。\n',
-        '2. **技术路线**：全程采用 **TypeScript (Hono) + Flutter + React**，已为您整理好下阶段学习日程卡片：',
+        '1. **月度算力预算红线**：Google Cloud 与大模型 API 预算上限严格设定为 **$10.00 / 月**（当前已消耗 $4.20）。\n',
+        '2. **技术路线**：全程采用 **TypeScript (Hono) + React + Ant Design (Web & H5)**，已为您整理好下阶段学习日程卡片：',
       ],
       uiCard: {
         cardType: 'schedule_card',
         cardId: 'card_sch_303',
-        title: 'Flutter × AI 多通道 SSE 流式架构复盘',
+        title: 'React H5 × AI 多通道 SSE 流式架构复盘',
         startTime: '2026-11-26 14:00',
         endTime: '2026-11-26 15:30',
         location: '个人开发工作台 / 提前 15 分钟系统提醒',
@@ -279,7 +279,7 @@ function buildScenarioPayload(
     },
     citations: [MEMORY_BANK[0]],
     markdownChunks: [
-      '根据您上周归档的《Q4 AI 基建预算纪要》[1]，您的 Google Cloud 与大模型月度预算上限严格设定为 **$30.00**（当前累计消耗 $4.20）。\n\n',
+      '根据您上周归档的《Q4 AI 基建预算纪要》[1]，您的 Google Cloud 与大模型月度预算上限严格设定为 **$10.00**（当前累计消耗 $4.20）。\n\n',
       '同时，已从白板照片中提取出架构评审日程，**写入手机系统日历前请确认审批**：',
     ],
     uiCard: {
